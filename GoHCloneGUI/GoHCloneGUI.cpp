@@ -696,14 +696,14 @@ LRESULT CALLBACK wndProc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
     }
     case WM_MEASUREITEM:{
         auto* m=reinterpret_cast<MEASUREITEMSTRUCT*>(lp);
-        if(m->CtlType==ODT_MENU){const wchar_t* label=reinterpret_cast<const wchar_t*>(m->itemData);HDC dc=GetDC(hwnd);SIZE z{};HFONT old=static_cast<HFONT>(SelectObject(dc,gFont));GetTextExtentPoint32W(dc,label,static_cast<int>(wcslen(label)),&z);SelectObject(dc,old);ReleaseDC(hwnd,dc);m->itemWidth=static_cast<UINT>(z.cx+38);m->itemHeight=34;return TRUE;}
+        if(m->CtlType==ODT_MENU){const wchar_t* label=reinterpret_cast<const wchar_t*>(m->itemData);HDC dc=GetDC(hwnd);SIZE z{};HFONT old=reinterpret_cast<HFONT>(SelectObject(dc,gFont));GetTextExtentPoint32W(dc,label,static_cast<int>(wcslen(label)),&z);SelectObject(dc,old);ReleaseDC(hwnd,dc);m->itemWidth=static_cast<UINT>(z.cx+38);m->itemHeight=34;return TRUE;}
         break;
     }
     case WM_DRAWITEM:{
         auto* d=reinterpret_cast<DRAWITEMSTRUCT*>(lp);
         if(d->CtlType==ODT_MENU){const wchar_t* label=reinterpret_cast<const wchar_t*>(d->itemData);const bool selected=(d->itemState&ODS_SELECTED)!=0;
             HBRUSH brush=CreateSolidBrush(selected?kSelected:kPanel);FillRect(d->hDC,&d->rcItem,brush);DeleteObject(brush);
-            SetBkMode(d->hDC,TRANSPARENT);SetTextColor(d->hDC,selected?kGold:kText);HFONT old=static_cast<HFONT>(SelectObject(d->hDC,gFont));
+            SetBkMode(d->hDC,TRANSPARENT);SetTextColor(d->hDC,selected?kGold:kText);HFONT old=reinterpret_cast<HFONT>(SelectObject(d->hDC,gFont));
             RECT r=d->rcItem;r.left+=18;DrawTextW(d->hDC,label,-1,&r,DT_SINGLELINE|DT_VCENTER|DT_LEFT);
             SelectObject(d->hDC,old);return TRUE;}
         break;
