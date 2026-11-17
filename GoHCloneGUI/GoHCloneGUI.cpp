@@ -12,12 +12,15 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstdint>
 #include <cmath>
 #include <cctype>
 #include <cwctype>
 #include <cstdio>
 #include <cstdlib>
 #include <filesystem>
+#include <iterator>
+#include <stdexcept>
 #include <fstream>
 #include <iomanip>
 #include <memory>
@@ -62,7 +65,12 @@ const StatField kStats[] = {
     {L"Tenacity (%)", "tenacity_pct"}, {L"Accuracy (%)", "accuracy_pct"},
     {L"Critical avoidance (%)", "crit_avoid_pct"}, {L"Dodge (%)", "dodge_pct"},
     {L"Deflection (%)", "deflection_pct"}, {L"Health steal (%)", "health_steal_pct"},
-    {L"Armor penetration", "armor_pen"}, {L"Resistance penetration", "resistance_pen"}
+    {L"Armor penetration", "armor_pen"}, {L"Resistance penetration", "resistance_pen"},
+    {L"Defense penetration (%)", "defense_pen_pct"},
+    {L"Counter chance (%)", "counter_chance_pct"},
+    {L"Damage dealt multiplier (x)", "damage_dealt_mult"},
+    {L"Damage taken multiplier (x)", "damage_taken_mult"},
+    {L"Out-of-turn damage multiplier (x)", "out_of_turn_damage_mult"}
 };
 
 HWND gMain = nullptr;
@@ -299,7 +307,7 @@ void createUnitEditor() {
     const wchar_t* effects[]={L"Damage",L"Heal",L"Apply status",L"Turn meter change",L"Cooldown change",L"Ultimate charge",L"Dispel",L"Revive",L"Bonus turn",L"Assist",L"Counter",L"Use ability again",L"Instant defeat",L"Remove status"};
     for(auto s:effects)addCombo(gEffectType,s);SendMessageW(gEffectType,CB_SETCURSEL,0,0);
     lab(L"Target",265,520,45);gEffectTarget=combo(ID_EFFECT_TARGET,310,516,145);
-    const wchar_t* targets[]={L"Selected enemy",L"Selected ally",L"Selected dead ally",L"All enemies",L"All allies",L"Other allies",L"Self",L"Random enemy",L"Random ally",L"Lowest ally",L"Lowest enemy",L"Highest enemy",L"Leader ally",L"Last hit target"};
+    const wchar_t* targets[]={L"Selected enemy",L"Selected ally",L"Selected dead ally",L"All enemies",L"All allies",L"Other allies",L"Self",L"Random enemy",L"Random ally",L"Lowest ally",L"Lowest enemy",L"Highest enemy",L"Leader ally",L"Last hit target",L"Event subject",L"Event other"};
     for(auto s:targets)addCombo(gEffectTarget,s);SendMessageW(gEffectTarget,CB_SETCURSEL,0,0);
     lab(L"Damage type",470,520,85);gEffectDamage=combo(ID_EFFECT_DAMAGE,555,516,115);
     addCombo(gEffectDamage,L"Physical");addCombo(gEffectDamage,L"Special");addCombo(gEffectDamage,L"True");SendMessageW(gEffectDamage,CB_SETCURSEL,0,0);
@@ -394,8 +402,8 @@ std::string effectTypeKey() {
     int n=static_cast<int>(SendMessageW(gEffectType,CB_GETCURSEL,0,0));return n>=0&&n<14?a[n]:"damage";
 }
 std::string effectTargetKey() {
-    static const char* a[]={"selected","selected_ally","selected_dead_ally","all_enemies","all_allies","other_allies","self","random_enemy","random_ally","lowest_ally","lowest_enemy","highest_enemy","leader_ally","hit_target"};
-    int n=static_cast<int>(SendMessageW(gEffectTarget,CB_GETCURSEL,0,0));return n>=0&&n<14?a[n]:"selected";
+    static const char* a[]={"selected","selected_ally","selected_dead_ally","all_enemies","all_allies","other_allies","self","random_enemy","random_ally","lowest_ally","lowest_enemy","highest_enemy","leader_ally","hit_target","event_subject","event_other"};
+    int n=static_cast<int>(SendMessageW(gEffectTarget,CB_GETCURSEL,0,0));return n>=0&&n<16?a[n]:"selected";
 }
 std::string effectDamageKey() {
     int n=static_cast<int>(SendMessageW(gEffectDamage,CB_GETCURSEL,0,0));return n==1?"ability_power":n==2?"unmitigable":"attack_damage";
@@ -429,7 +437,8 @@ void addEffect() {
     else if(type=="apply_status"||type=="remove_status"){
         if(status.empty()){MessageBoxW(gMain,L"Choose a status for this effect.",L"Status required",MB_ICONWARNING);return;}
         j<<",\"status\":\""<<escapeJson(status)<<"\",\"duration\":"<<static_cast<int>(duration)<<",\"stacks\":"<<std::max(1,static_cast<int>(amount));
-    } else if(type=="modify_turn_meter"||type=="modify_cooldown"||type=="modify_ultimate")j<<",\"amount\":"<<fmt(value);
+    } else if(type=="modify_turn_meter"||type=="modify_ultimate")j<<",\"amount\":"<<fmt(value);
+    else if(type=="modify_cooldown")j<<",\"amount\":"<<fmt(value)<<",\"ability\":\""<<escapeJson(toUtf8(getText(gEffectAbility)))<<"\";
     else if(type=="dispel"){
         std::string dispel=comboText(gEffectDispel);std::transform(dispel.begin(),dispel.end(),dispel.begin(),[](unsigned char c){return static_cast<char>(std::tolower(c));});
         j<<",\"dispel\":\""<<dispel<<"\",\"count\":"<<static_cast<int>(amount);
@@ -438,7 +447,7 @@ void addEffect() {
     j<<"}";
     try{json::parse(j.str());}catch(const std::exception& e){MessageBoxW(gMain,fromUtf8(e.what()).c_str(),L"Effect JSON error",MB_ICONERROR);return;}
     gEffectJson.push_back(j.str());
-    std::string desc=type+" -> "+target;
+    std::string desc=type+" -> "+target+" ("+j.str()+")";
     if(!status.empty()&&(type=="apply_status"||type=="remove_status"))desc+=" ("+status+")";
     int n=static_cast<int>(SendMessageW(gEffectList,LB_ADDSTRING,0,reinterpret_cast<LPARAM>(fromUtf8(desc).c_str())));
     SendMessageW(gEffectList,LB_SETCURSEL,n,0);
@@ -590,10 +599,10 @@ LRESULT CALLBACK wndProc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
         if(id==M_FILE_SELECT){chooseDataFolder();return 0;}
         if(id==M_FILE_RELOAD){try{reloadData();showPage(0);}catch(const std::exception& e){MessageBoxW(hwnd,fromUtf8(e.what()).c_str(),L"Reload failed",MB_ICONERROR);}return 0;}
         if(id==M_FILE_EXIT){DestroyWindow(hwnd);return 0;}
-        if(id==M_ROSTER_HOME||id==ID_HOME_ADD&&code==BN_CLICKED){navigate(id==M_ROSTER_HOME?0:1);return 0;}
+        if(id==M_ROSTER_HOME||(id==ID_HOME_ADD&&code==BN_CLICKED)){navigate(id==M_ROSTER_HOME?0:1);return 0;}
         if(id==M_ROSTER_ADD){navigate(1);return 0;}
-        if(id==M_ROSTER_STATUS||id==ID_HOME_STATUS&&code==BN_CLICKED){navigate(2);return 0;}
-        if(id==M_BATTLE_SIM||id==ID_HOME_SIM&&code==BN_CLICKED){navigate(3);return 0;}
+        if(id==M_ROSTER_STATUS||(id==ID_HOME_STATUS&&code==BN_CLICKED)){navigate(2);return 0;}
+        if(id==M_BATTLE_SIM||(id==ID_HOME_SIM&&code==BN_CLICKED)){navigate(3);return 0;}
         if(id==M_BATTLE_VALIDATE){validateData();return 0;}
         if(id==M_HELP_ABOUT){MessageBoxW(hwnd,L"GoHClone Desktop\r\nA desktop front end for the GoHClone C++ battle engine.\r\nOriginal demo content only; add your own test units through Roster > Add / edit unit.",L"About",MB_ICONINFORMATION);return 0;}
         if(id==ID_NAME&&code==EN_CHANGE){updateNameId();return 0;}
