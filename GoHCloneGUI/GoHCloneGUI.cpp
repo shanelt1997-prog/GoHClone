@@ -718,7 +718,7 @@ LRESULT CALLBACK wndProc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
         if(id==M_ROSTER_STATUS||(id==ID_HOME_STATUS&&code==BN_CLICKED)){navigate(2);return 0;}
         if(id==M_BATTLE_SIM||(id==ID_HOME_SIM&&code==BN_CLICKED)){navigate(3);return 0;}
         if(id==M_BATTLE_VALIDATE){validateData();return 0;}
-        if(id==M_HELP_ABOUT){MessageBoxW(hwnd,L"GoHClone Desktop\r\nA desktop front end for the GoHClone C++ battle engine.\r\nOriginal demo content only; add your own test units through Roster > Add / edit unit.",L"About",MB_ICONINFORMATION);return 0;}
+        if(id==M_HELP_ABOUT){MessageBoxW(hwnd,L"GoHClone Desktop\r\nA desktop front end for the GoHClone C++ battle engine.\r\nOriginal demo content only; add your own test units through Roster > Create new unit.",L"About",MB_ICONINFORMATION);return 0;}
         if(id==ID_NAME&&code==EN_CHANGE){updateNameId();return 0;}
         if(id==ID_ADD_EFFECT&&code==BN_CLICKED){addEffect();return 0;}
         if(id==ID_REMOVE_EFFECT&&code==BN_CLICKED){removeEffect();return 0;}
