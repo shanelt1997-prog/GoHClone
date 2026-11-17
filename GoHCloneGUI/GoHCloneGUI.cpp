@@ -147,6 +147,22 @@ bool numberFrom(HWND h,double& v) {
     v=wcstod(s.c_str(),&end);
     return end!=s.c_str()&&*end==L'\0'&&std::isfinite(v)&&v>=0;
 }
+bool signedNumberFrom(HWND h,double& v) {
+    auto s=trimW(getText(h));
+    if(s.empty()){v=0;return true;}
+    wchar_t* end=nullptr;
+    v=wcstod(s.c_str(),&end);
+    return end!=s.c_str()&&*end==L'\0'&&std::isfinite(v);
+}
+bool durationFrom(HWND h,int& v) {
+    const auto s=trimW(getText(h));
+    if(s.empty()){v=-999;return true;} // use the status definition's default duration
+    if(s==L"-1"){v=-1;return true;} // permanent
+    wchar_t* end=nullptr;
+    long n=std::wcstol(s.c_str(),&end,10);
+    if(end==s.c_str()||*end!=L'\0'||n<0||n>99)return false;
+    v=static_cast<int>(n);return true;
+}
 std::string slug(const std::wstring& s) {
     std::string o; bool sep=false;
     for(wchar_t c:s) {
@@ -212,7 +228,7 @@ void resetForm() {
     if(gEffectList)SendMessageW(gEffectList,LB_RESETCONTENT,0,0);
     setText(gAbilityName,L"");setText(gAbilityCd,L"3");setText(gAbilityCharge,L"100");setText(gAbilityDesc,L"");
     setText(gEffectValue,L"1.0");setText(gEffectAux,L"0");setText(gEffectChance,L"100");
-    setText(gEffectDuration,L"2");setText(gEffectAmount,L"0");setText(gEffectAbility,L"*");
+    setText(gEffectDuration,L"");setText(gEffectAmount,L"0");setText(gEffectAbility,L"*");
     SendMessageW(gAbilityKind,CB_SETCURSEL,0,0);SendMessageW(gAbilityPick,CB_SETCURSEL,0,0);
     SendMessageW(gEffectType,CB_SETCURSEL,0,0);SendMessageW(gEffectTarget,CB_SETCURSEL,0,0);
     SendMessageW(gEffectDamage,CB_SETCURSEL,0,0);SendMessageW(gEffectStatus,CB_SETCURSEL,0,0);
@@ -317,7 +333,7 @@ void createUnitEditor() {
     lab(L"Multiplier / value",42,558,115);gEffectValue=edit(L"1.0",ID_EFFECT_VALUE,157,554,80);
     lab(L"Extra value",250,558,80);gEffectAux=edit(L"0",ID_EFFECT_AUX,330,554,70);
     lab(L"Chance %",420,558,70);gEffectChance=edit(L"100",ID_EFFECT_CHANCE,490,554,65);
-    lab(L"Duration",575,558,65);gEffectDuration=edit(L"2",ID_EFFECT_DURATION,640,554,55);
+    lab(L"Duration",575,558,65);gEffectDuration=edit(L"",ID_EFFECT_DURATION,640,554,55);lab(L"(blank = status default; -1 = permanent)",700,558,210,22);
     lab(L"Amount / stacks",715,558,100);gEffectAmount=edit(L"0",ID_EFFECT_AMOUNT,815,554,65);
     lab(L"Ability ref",900,558,70);gEffectAbility=edit(L"*",ID_EFFECT_ABILITY,970,554,120);
     lab(L"Passive trigger (optional)",42,592,170);gTriggerEvent=combo(ID_TRIGGER_EVENT,212,588,185);
@@ -426,8 +442,9 @@ std::string triggerScopeKey() {
 }
 void addEffect() {
     double value=1,aux=0,chance=100,duration=2,amount=0;
-    if(!numberFrom(gEffectValue,value)||!numberFrom(gEffectAux,aux)||!numberFrom(gEffectChance,chance)||chance>100||
-       !numberFrom(gEffectDuration,duration)||duration>99||!numberFrom(gEffectAmount,amount)) {
+    int duration=-999;
+    if(!signedNumberFrom(gEffectValue,value)||!signedNumberFrom(gEffectAux,aux)||!numberFrom(gEffectChance,chance)||chance>100||
+       !durationFrom(gEffectDuration,duration)||!numberFrom(gEffectAmount,amount)) {
         MessageBoxW(gMain,L"Check multiplier, extra value, chance, duration and amount. Values must be valid non-negative numbers.",L"Invalid effect",MB_ICONWARNING);return;
     }
     std::string type=effectTypeKey(),target=effectTargetKey(),status=statusIdAtCombo(gEffectStatus);
@@ -460,8 +477,14 @@ void removeEffect() {
 void addAbility() {
     std::string name=toUtf8(trimW(getText(gAbilityName))),id=slug(getText(gAbilityName)),kind=abilityKindKey();
     if(name.empty()||id.empty()){MessageBoxW(gMain,L"Enter an ability name first.",L"Ability name",MB_ICONWARNING);return;}
-    if(gEffectJson.empty()&&triggerEventKey().empty()&&kind!="leader"){
-        MessageBoxW(gMain,L"Add at least one effect to this ability.",L"No effects",MB_ICONWARNING);return;
+    if(kind=="unique"&&triggerEventKey().empty()){
+        MessageBoxW(gMain,L"Choose a passive trigger event for a Unique ability.",L"Trigger required",MB_ICONWARNING);return;
+    }
+    if(kind=="unique"&&gEffectJson.empty()){
+        MessageBoxW(gMain,L"Add at least one effect to the Unique ability's trigger.",L"No trigger effects",MB_ICONWARNING);return;
+    }
+    if((kind=="basic"||kind=="special"||kind=="ultimate")&&gEffectJson.empty()){
+        MessageBoxW(gMain,L"Add at least one effect to this active ability.",L"No effects",MB_ICONWARNING);return;
     }
     for(const auto& a:gAbilityJson)if(a.find("\"id\":\""+id+"\"")!=std::string::npos){MessageBoxW(gMain,L"That ability name creates a duplicate ID. Use a different name.",L"Duplicate ability",MB_ICONWARNING);return;}
     double cd=3,charge=100;
@@ -473,10 +496,9 @@ void addAbility() {
         j<<",\"triggers\":[{\"on\":\""<<triggerEventKey()<<"\",\"scope\":\""<<triggerScopeKey()<<"\",\"effects\":[";
         for(size_t i=0;i<gEffectJson.size();++i)j<<(i?",":"")<<gEffectJson[i];
         j<<"]}]";
-    } else if(kind=="leader"&&!gEffectJson.empty()) {
-        // A simple leader can grant a selected status aura to the whole team when an Apply Status effect is added.
+    } else if(kind=="leader") {
         const std::string status=statusIdAtCombo(gEffectStatus);
-        if(status.empty()){MessageBoxW(gMain,L"For a leader aura, select the status to grant and add it as an Apply Status effect first.",L"Leader aura",MB_ICONWARNING);return;}
+        if(status.empty()){MessageBoxW(gMain,L"Select the status this Leader ability grants to all allies in the Status field.",L"Leader aura",MB_ICONWARNING);return;}
         j<<",\"auras\":[{\"target\":\"all_allies\",\"status\":\""<<escapeJson(status)<<"\",\"duration\":-1}]";
     } else {
         j<<",\"effects\":[";
