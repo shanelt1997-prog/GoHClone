@@ -16,6 +16,7 @@
 #include <cmath>
 #include <cctype>
 #include <cwctype>
+#include <cwchar>
 #include <cstdio>
 #include <cstdlib>
 #include <filesystem>
@@ -441,7 +442,7 @@ std::string triggerScopeKey() {
     int n=static_cast<int>(SendMessageW(gTriggerScope,CB_GETCURSEL,0,0));return n>=0&&n<5?a[n]:"self";
 }
 void addEffect() {
-    double value=1,aux=0,chance=100,duration=2,amount=0;
+    double value=1,aux=0,chance=100,amount=0;
     int duration=-999;
     if(!signedNumberFrom(gEffectValue,value)||!signedNumberFrom(gEffectAux,aux)||!numberFrom(gEffectChance,chance)||chance>100||
        !durationFrom(gEffectDuration,duration)||!numberFrom(gEffectAmount,amount)) {
