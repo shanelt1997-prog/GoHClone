@@ -2,9 +2,9 @@ name: Windows build
 
 on:
   push:
-    branches: [desktop-gui-v2, star-wars-ui]
+    branches: [desktop-gui-v2, star-wars-ui, comlink-character-import]
   pull_request:
-    branches: [master]
+    branches: [master, star-wars-ui]
   workflow_dispatch:
 
 jobs:
