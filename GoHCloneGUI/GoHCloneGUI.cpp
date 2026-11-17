@@ -305,10 +305,10 @@ void createUnitEditor() {
     lab(L"Tags (comma separated)",715,120,155);gTags=edit(L"",ID_TAGS,870,116,285);
     group(L"UNIT STATS",20,175,1180,210);
     for(size_t i=0;i<std::size(kStats);++i){
-        int col=static_cast<int>(i/4),row=static_cast<int>(i%4);
-        int x=32+col*232,y=210+row*39;
-        lab(kStats[i].label,x,y,136,22);
-        HWND e=edit(L"",2100+static_cast<int>(i),x+137,y-3,88);
+        int col=static_cast<int>(i/6),row=static_cast<int>(i%6);
+        int x=32+col*285,y=205+row*28;
+        lab(kStats[i].label,x,y,160,22);
+        HWND e=edit(L"",2100+static_cast<int>(i),x+160,y-3,90);
         gStatEdits.push_back({static_cast<int>(i),e});
     }
     group(L"ABILITIES (ADD AS MANY AS THE UNIT NEEDS)",20,395,1180,475);
@@ -322,7 +322,7 @@ void createUnitEditor() {
     lab(L"Cooldown",755,425,65);gAbilityCd=edit(L"3",ID_ABILITY_CD,820,421,55);
     lab(L"Ult charge",890,425,70);gAbilityCharge=edit(L"100",ID_ABILITY_CHARGE,960,421,55);
     lab(L"Description",35,458,85);gAbilityDesc=edit(L"",ID_ABILITY_DESC,120,454,1035);
-    group(L"ABILITY EFFECTS - build the actions this ability performs",30,492,1155,190);
+    group(L"ABILITY EFFECTS - build the actions this ability performs",30,492,1155,210);
     lab(L"Effect",42,520,48);gEffectType=combo(ID_EFFECT_TYPE,90,516,160);
     const wchar_t* effects[]={L"Damage",L"Heal",L"Apply status",L"Turn meter change",L"Cooldown change",L"Ultimate charge",L"Dispel",L"Revive",L"Bonus turn",L"Assist",L"Counter",L"Use ability again",L"Instant defeat",L"Remove status"};
     for(auto s:effects)addCombo(gEffectType,s);SendMessageW(gEffectType,CB_SETCURSEL,0,0);
@@ -346,13 +346,12 @@ void createUnitEditor() {
     lab(L"Scope",420,592,50);gTriggerScope=combo(ID_TRIGGER_SCOPE,470,588,120);
     addCombo(gTriggerScope,L"This unit");addCombo(gTriggerScope,L"Ally");addCombo(gTriggerScope,L"Any ally");addCombo(gTriggerScope,L"Enemy");addCombo(gTriggerScope,L"Any");
     SendMessageW(gTriggerScope,CB_SETCURSEL,0,0);
-    btn(L"Add effect to ability",ID_ADD_EFFECT,620,585,170,30);
-    btn(L"Remove selected effect",ID_REMOVE_EFFECT,800,585,180,30);
-    gEffectList=listbox(ID_EFFECT_LIST,42,625,1090,48);
-    lab(L"Effects currently in this ability:",35,685,235,22);
-    btn(L"Add ability to unit",ID_ADD_ABILITY,280,680,165,32);
-    btn(L"Remove selected ability",ID_REMOVE_ABILITY,455,680,190,32);
-    gAbilityList=listbox(ID_ABILITY_LIST,35,718,1090,85);
+    btn(L"Add effect to ability",ID_ADD_EFFECT,620,615,170,30);
+    btn(L"Remove selected effect",ID_REMOVE_EFFECT,800,615,180,30);
+    gEffectList=listbox(ID_EFFECT_LIST,42,650,1090,42);
+    btn(L"Add ability to unit",ID_ADD_ABILITY,280,704,165,32);
+    btn(L"Remove selected ability",ID_REMOVE_ABILITY,455,704,190,32);
+    gAbilityList=listbox(ID_ABILITY_LIST,35,742,1090,65);
     btn(L"Save and validate unit",ID_SAVE_UNIT,820,818,180,38);
     btn(L"Clear form",ID_CLEAR_UNIT,1015,818,120,38);
     updateNameId();
