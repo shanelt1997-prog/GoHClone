@@ -651,7 +651,7 @@ HMENU createMenuBar() {
     AppendMenuW(file,MF_STRING,M_FILE_RELOAD,L"Reload project data");
     AppendMenuW(file,MF_SEPARATOR,0,nullptr);AppendMenuW(file,MF_STRING,M_FILE_EXIT,L"Exit");
     AppendMenuW(roster,MF_STRING,M_ROSTER_HOME,L"Overview");
-    AppendMenuW(roster,MF_STRING,M_ROSTER_ADD,L"Add / edit unit");
+    AppendMenuW(roster,MF_STRING,M_ROSTER_ADD,L"Add new unit");
     AppendMenuW(roster,MF_STRING,M_ROSTER_STATUS,L"Buff and debuff library");
     AppendMenuW(battle,MF_STRING,M_BATTLE_SIM,L"Battle simulator");
     AppendMenuW(battle,MF_STRING,M_BATTLE_VALIDATE,L"Validate loaded data");
