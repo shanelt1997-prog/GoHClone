@@ -753,9 +753,9 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,PWSTR,int show) {
     INITCOMMONCONTROLSEX icc{sizeof(icc),ICC_STANDARD_CLASSES};InitCommonControlsEx(&icc);
     wchar_t exe[MAX_PATH]{};GetModuleFileNameW(nullptr,exe,MAX_PATH);gExeDir=fs::path(exe).parent_path();gDataDir=locateData();
     WNDCLASSEXW wc{sizeof(wc)};wc.lpfnWndProc=wndProc;wc.hInstance=instance;wc.hCursor=LoadCursorW(nullptr,IDC_ARROW);
-    wc.hIcon=LoadIconW(nullptr,IDI_APPLICATION);wc.hbrBackground=CreateSolidBrush(kSpaceBlack);wc.lpszClassName=kWindowClass;
+    wc.hIcon=LoadIconW(nullptr,IDI_APPLICATION);wc.hbrBackground=nullptr;wc.lpszClassName=kWindowClass;
     if(!RegisterClassExW(&wc))return 1;
-    HWND w=CreateWindowExW(0,kWindowClass,L"GoHClone - Unit Builder and Battle Simulator",WS_OVERLAPPEDWINDOW,
+    HWND w=CreateWindowExW(0,kWindowClass,L"GoHClone // Galactic Combat Analysis",WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT,CW_USEDEFAULT,1280,1010,nullptr,nullptr,instance,nullptr);
     if(!w)return 1;ShowWindow(w,show);UpdateWindow(w);
     MSG m{};while(GetMessageW(&m,nullptr,0,0)>0){TranslateMessage(&m);DispatchMessageW(&m);}
