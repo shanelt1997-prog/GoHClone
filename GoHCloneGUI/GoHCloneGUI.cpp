@@ -468,11 +468,15 @@ void addEffect() {
     std::ostringstream j;j<<"{\"type\":\""<<type<<"\",\"target\":\""<<target<<"\",\"chance\":"<<fmt(chance/100.0);
     if(type=="damage")j<<",\"damage_type\":\""<<effectDamageKey()<<"\",\"multiplier\":"<<fmt(value);
     else if(type=="heal")j<<",\"multiplier\":"<<fmt(value)<<",\"protection_multiplier\":"<<fmt(aux);
-    else if(type=="apply_status"||type=="remove_status"){
+    else if(type=="apply_status"){
         if(status.empty()){MessageBoxW(gMain,L"Choose a status for this effect.",L"Status required",MB_ICONWARNING);return;}
         j<<",\"status\":\""<<escapeJson(status)<<"\",\"duration\":"<<duration<<",\"stacks\":"<<std::max(1,static_cast<int>(amount));
         if(aux!=0)j<<",\"amount\":"<<fmt(aux);
-    } else if(type=="modify_turn_meter"||type=="modify_ultimate")j<<",\"amount\":"<<fmt(value);
+    } else if(type=="remove_status"){
+        if(status.empty()){MessageBoxW(gMain,L"Choose a status to remove.",L"Status required",MB_ICONWARNING);return;}
+        j<<",\"status\":\""<<escapeJson(status)<<"\",\"count\":"<<static_cast<int>(amount);
+    } else if(type=="revive")j<<",\"amount\":"<<fmt(amount);
+    else if(type=="modify_turn_meter"||type=="modify_ultimate")j<<",\"amount\":"<<fmt(value);
     else if(type=="modify_cooldown") j << ",\"amount\":" << fmt(value) << ",\"ability\":\"" << escapeJson(toUtf8(getText(gEffectAbility))) << "\"";
     else if(type=="dispel"){
         std::string dispel=comboText(gEffectDispel);std::transform(dispel.begin(),dispel.end(),dispel.begin(),[](unsigned char c){return static_cast<char>(std::tolower(c));});
