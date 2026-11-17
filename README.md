@@ -316,3 +316,8 @@ The star-wars-ui branch adds a dark holotable-inspired visual theme to the nativ
 Windows desktop application: deep space/navy surfaces, gold-highlighted owner-drawn
 menus, light text, dark input fields, and updated Galactic Database dashboard wording.
 The existing unit editor, status browser and simulator workflows are retained.
+
+
+## SWGOH Comlink data source
+
+The `comlink-character-import` branch adds a Comlink sync command under **DATA**. It downloads the latest unit/ability game-data segment into `data/comlink/game-data.json` without modifying the existing demo roster. See [docs/COMLINK_IMPORT.md](docs/COMLINK_IMPORT.md) for setup and current import limitations.

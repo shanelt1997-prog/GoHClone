@@ -4,6 +4,7 @@
 #include <commctrl.h>
 #include <shlobj.h>
 #include <objbase.h>
+#include <winhttp.h>
 
 #include "Ai.h"
 #include "Battle.h"
@@ -31,16 +32,19 @@
 #include <thread>
 #include <utility>
 #include <vector>
+#include <atomic>
 
 #pragma comment(lib, "Comctl32.lib")
 #pragma comment(lib, "Shell32.lib")
 #pragma comment(lib, "Ole32.lib")
+#pragma comment(lib, "Winhttp.lib")
 
 namespace fs = std::filesystem;
 
 namespace {
 constexpr wchar_t kWindowClass[] = L"GoHCloneDesktopV2";
 enum {
+    M_DATA_COMLINK = 999,
     M_FILE_SELECT = 1000, M_FILE_RELOAD, M_FILE_EXIT,
     M_ROSTER_HOME, M_ROSTER_ADD, M_ROSTER_STATUS,
     M_BATTLE_SIM, M_BATTLE_VALIDATE,
@@ -103,6 +107,7 @@ std::vector<std::string> gStatusIds, gFilteredStatuses;
 std::vector<std::string> gEffectJson, gAbilityJson, gAbilityLabels;
 std::thread gWorker;
 bool gBusy=false;
+struct ComlinkResult { std::string text; bool ok=false; };
 
 std::wstring fromUtf8(const std::string& s) {
     if (s.empty()) return {};
@@ -652,12 +657,108 @@ void chooseDataFolder() {
     if(!ok)return;fs::path p(path);if(!fs::exists(p/"content.json")){MessageBoxW(gMain,L"The selected folder does not contain content.json.",L"Not a GoHClone data folder",MB_ICONWARNING);return;}
     gDataDir=p;try{reloadData();showPage(0);}catch(const std::exception& e){MessageBoxW(gMain,fromUtf8(e.what()).c_str(),L"Data loading",MB_ICONERROR);}
 }
+
+std::string httpRequest(const std::wstring& url,const wchar_t* method,const std::string& body) {
+    URL_COMPONENTS parts{};parts.dwStructSize=sizeof(parts);
+    parts.dwSchemeLength=static_cast<DWORD>(-1);parts.dwHostNameLength=static_cast<DWORD>(-1);
+    parts.dwUrlPathLength=static_cast<DWORD>(-1);parts.dwExtraInfoLength=static_cast<DWORD>(-1);
+    if(!WinHttpCrackUrl(url.c_str(),0,0,&parts))throw std::runtime_error("Invalid Comlink URL.");
+    std::wstring host(parts.lpszHostName,parts.dwHostNameLength);
+    std::wstring path(parts.lpszUrlPath,parts.dwUrlPathLength);
+    if(parts.dwExtraInfoLength)path.append(parts.lpszExtraInfo,parts.dwExtraInfoLength);
+    HINTERNET session=WinHttpOpen(L"GoHClone/ComlinkImporter",WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,WINHTTP_NO_PROXY_NAME,WINHTTP_NO_PROXY_BYPASS,0);
+    if(!session)throw std::runtime_error("Could not initialise Windows HTTP.");
+    HINTERNET connection=WinHttpConnect(session,host.c_str(),parts.nPort,0);
+    if(!connection){WinHttpCloseHandle(session);throw std::runtime_error("Could not connect to Comlink. Check that it is running.");}
+    DWORD flags=parts.nScheme==INTERNET_SCHEME_HTTPS?WINHTTP_FLAG_SECURE:0;
+    HINTERNET request=WinHttpOpenRequest(connection,method,path.c_str(),nullptr,WINHTTP_NO_REFERER,WINHTTP_DEFAULT_ACCEPT_TYPES,flags);
+    if(!request){WinHttpCloseHandle(connection);WinHttpCloseHandle(session);throw std::runtime_error("Could not create Comlink request.");}
+    std::wstring headers=L"Content-Type: application/json\r\nAccept: application/json\r\n";
+    BOOL sent=WinHttpSendRequest(request,headers.c_str(),static_cast<DWORD>(headers.size()),
+        body.empty()?WINHTTP_NO_REQUEST_DATA:const_cast<char*>(body.data()),static_cast<DWORD>(body.size()),
+        static_cast<DWORD>(body.size()),0);
+    if(!sent||!WinHttpReceiveResponse(request,nullptr)){
+        WinHttpCloseHandle(request);WinHttpCloseHandle(connection);WinHttpCloseHandle(session);
+        throw std::runtime_error("Comlink did not return a response. Check its URL and availability.");
+    }
+    DWORD status=0,statusSize=sizeof(status);
+    WinHttpQueryHeaders(request,WINHTTP_QUERY_STATUS_CODE|WINHTTP_QUERY_FLAG_NUMBER,WINHTTP_HEADER_NAME_BY_INDEX,&status,&statusSize,WINHTTP_NO_HEADER_INDEX);
+    if(status<200||status>=300){
+        WinHttpCloseHandle(request);WinHttpCloseHandle(connection);WinHttpCloseHandle(session);
+        throw std::runtime_error("Comlink returned HTTP status "+std::to_string(status)+".");
+    }
+    std::string response;
+    for(;;){DWORD available=0;if(!WinHttpQueryDataAvailable(request,&available)||available==0)break;
+        std::string chunk(available,'\0');DWORD read=0;
+        if(!WinHttpReadData(request,chunk.data(),available,&read))break;
+        chunk.resize(read);response+=chunk;
+    }
+    WinHttpCloseHandle(request);WinHttpCloseHandle(connection);WinHttpCloseHandle(session);
+    return response;
+}
+void syncComlink() {
+    if(gBusy){MessageBoxW(gMain,L"Another task is already running.",L"Comlink",MB_ICONINFORMATION);return;}
+    const wchar_t* envName=L"GOHCLONE_COMLINK_URL";
+    DWORD n=GetEnvironmentVariableW(envName,nullptr,0);
+    std::wstring base=L"http://localhost:3000";
+    if(n){std::wstring v(n,L'\0');GetEnvironmentVariableW(envName,v.data(),n);v.resize(wcslen(v.c_str()));if(!v.empty())base=v;}
+    while(!base.empty()&&base.back()==L'/')base.pop_back();
+    if(MessageBoxW(gMain,(L"Download the latest SWGOH character and ability game-data segment from:\r\n\r\n"+base+
+       L"\r\n\r\nComlink must already be running. Continue?").c_str(),L"SWGOH Comlink",MB_ICONQUESTION|MB_YESNO)!=IDYES)return;
+    fs::path destination=gDataDir/"comlink";
+    gBusy=true;
+    gWorker=std::thread([base,destination](){
+        auto result=std::make_unique<ComlinkResult>();
+        try{
+            const std::string metadataText=httpRequest(base+L"/metadata",L"POST","{}");
+            json::Value metadata=json::parse(metadataText);
+            std::string version=metadata.str("latestGamedataVersion");
+            if(version.empty())if(const auto* p=metadata.find("data"))version=p->str("latestGamedataVersion");
+            if(version.empty())throw std::runtime_error("Comlink metadata did not contain latestGamedataVersion.");
+            const std::string request2="{\"payload\":{\"version\":\""+escapeJson(version)+"\",\"includePveUnits\":false,\"requestSegment\":2},\"enums\":false}";
+            const std::string request3="{\"payload\":{\"version\":\""+escapeJson(version)+"\",\"includePveUnits\":false,\"requestSegment\":3},\"enums\":false}";
+            const std::string segment2=httpRequest(base+L"/data",L"POST",request2);
+            const std::string segment3=httpRequest(base+L"/data",L"POST",request3);
+            json::Value parsed2=json::parse(segment2),parsed3=json::parse(segment3);
+            if(!parsed2.isObj()||!parsed3.isObj())throw std::runtime_error("Comlink returned game data in an unexpected format.");
+            std::string localizationVersion=metadata.str("latestLocalizationBundleVersion");
+            if(localizationVersion.empty())throw std::runtime_error("Comlink metadata did not contain latestLocalizationBundleVersion.");
+            const std::string localizationRequest="{\"payload\":{\"id\":\""+escapeJson(localizationVersion)+"\",\"language\":\"ENG_US\"},\"unzip\":true}";
+            const std::string localization=httpRequest(base+L"/localization",L"POST",localizationRequest);
+            json::parse(localization);
+            fs::create_directories(destination);
+            auto save=[&](const fs::path& path,const std::string& data){
+                std::ofstream out(path,std::ios::binary|std::ios::trunc);
+                if(!out)throw std::runtime_error("Could not write "+path.string()+".");
+                out.write(data.data(),static_cast<std::streamsize>(data.size()));
+                if(!out)throw std::runtime_error("Failed while saving "+path.string()+".");
+            };
+            save(destination/"game-data-segment2.json",segment2);
+            save(destination/"game-data-segment3.json",segment3);
+            save(destination/"localization-eng-us.json",localization);
+            size_t units=0,abilities=0;
+            if(const auto* u=parsed3.find("units"))if(u->isArr())units=u->a.size();
+            if(const auto* a=parsed2.find("ability"))if(a->isArr())abilities=a->a.size();
+            result->ok=true;
+            result->text="Comlink game data downloaded successfully.\r\n\r\nGame-data version: "+version+
+                "\r\nLocalization version: "+localizationVersion+
+                "\r\nUnit definitions: "+std::to_string(units)+
+                "\r\nAbility definitions: "+std::to_string(abilities)+
+                "\r\nTotal downloaded: "+std::to_string((segment2.size()+segment3.size()+localization.size())/1024)+" KB"+
+                "\r\n\r\nSaved under:\r\n"+destination.string()+
+                "\r\n\r\nThese are the raw character/ability source files. Character import and stat/ability conversion are separate steps; this cache is not yet a ready-to-run GoHClone roster.";
+        }catch(const std::exception& e){result->text=std::string("Comlink sync failed:\r\n")+e.what();}
+        PostMessageW(gMain,WM_APP+10,0,reinterpret_cast<LPARAM>(result.release()));
+    });
+}
+
 void navigate(int p){showPage(p);}
 void appendMenuItem(HMENU menu,UINT id,const wchar_t* label) {
     AppendMenuW(menu,MF_OWNERDRAW,id,reinterpret_cast<LPCWSTR>(label));
 }
 HMENU createMenuBar() {
     HMENU root=CreateMenu(),file=CreatePopupMenu(),roster=CreatePopupMenu(),battle=CreatePopupMenu(),help=CreatePopupMenu();
+    appendMenuItem(file,M_DATA_COMLINK,L"Sync SWGOH game data (Comlink)...");
     appendMenuItem(file,M_FILE_SELECT,L"Choose data folder...");
     appendMenuItem(file,M_FILE_RELOAD,L"Reload project data");
     AppendMenuW(file,MF_SEPARATOR,0,nullptr);appendMenuItem(file,M_FILE_EXIT,L"Exit");
@@ -710,6 +811,7 @@ LRESULT CALLBACK wndProc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
     }
     case WM_COMMAND:{
         int id=LOWORD(wp),code=HIWORD(wp);
+        if(id==M_DATA_COMLINK){syncComlink();return 0;}
         if(id==M_FILE_SELECT){chooseDataFolder();return 0;}
         if(id==M_FILE_RELOAD){try{reloadData();showPage(0);}catch(const std::exception& e){MessageBoxW(hwnd,fromUtf8(e.what()).c_str(),L"Reload failed",MB_ICONERROR);}return 0;}
         if(id==M_FILE_EXIT){DestroyWindow(hwnd);return 0;}
@@ -730,6 +832,11 @@ LRESULT CALLBACK wndProc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
         if((id==ID_STATUS_FILTER&&code==CBN_SELCHANGE)||(id==ID_STATUS_SEARCH&&code==EN_CHANGE)){refreshStatusList();return 0;}
         if(id==ID_SIM_RUN&&code==BN_CLICKED){runSimulation();return 0;}
         break;
+    }
+    case WM_APP+10:{
+        std::unique_ptr<ComlinkResult> result(reinterpret_cast<ComlinkResult*>(lp));gBusy=false;
+        if(result)MessageBoxW(hwnd,fromUtf8(result->text).c_str(),result->ok?L"Comlink sync complete":L"Comlink sync failed",result->ok?MB_ICONINFORMATION:MB_ICONERROR);
+        return 0;
     }
     case WM_APP+9:{
         std::unique_ptr<SimResult> result(reinterpret_cast<SimResult*>(lp));
