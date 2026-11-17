@@ -734,7 +734,7 @@ void syncComlink() {
                 "\r\n\r\nThis is the raw character/ability source cache. Character import and stat/ability conversion are separate steps; the raw game data is not yet a ready-to-run GoHClone roster.";
         }catch(const std::exception& e){result->text=std::string("Comlink sync failed:\r\n")+e.what();}
         PostMessageW(gMain,WM_APP+10,0,reinterpret_cast<LPARAM>(result.release()));
-    }).detach();
+    });
 }
 
 void navigate(int p){showPage(p);}
