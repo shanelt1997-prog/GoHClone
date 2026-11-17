@@ -438,6 +438,8 @@ std::string abilityKindKey() {
     int n=static_cast<int>(SendMessageW(gAbilityKind,CB_GETCURSEL,0,0));return n>=0&&n<5?a[n]:"basic";
 }
 std::string pickKey() {
+    const std::string kind=abilityKindKey();
+    if(kind=="leader"||kind=="unique")return "none";
     static const char* a[]={"enemy","ally","dead_ally","self","none"};
     int n=static_cast<int>(SendMessageW(gAbilityPick,CB_GETCURSEL,0,0));return n>=0&&n<5?a[n]:"enemy";
 }
@@ -457,6 +459,11 @@ void addEffect() {
         MessageBoxW(gMain,L"Check multiplier, extra value, chance, duration and amount. Values must be valid non-negative numbers.",L"Invalid effect",MB_ICONWARNING);return;
     }
     std::string type=effectTypeKey(),target=effectTargetKey(),status=statusIdAtCombo(gEffectStatus);
+    if((type=="damage"||type=="heal"||type=="assist"||type=="counter")&&value<0){
+        MessageBoxW(gMain,L"Damage, healing and reaction multipliers cannot be negative.",L"Invalid multiplier",MB_ICONWARNING);return;
+    }
+    if(type=="heal"&&aux<0){MessageBoxW(gMain,L"Protection healing multiplier cannot be negative.",L"Invalid healing value",MB_ICONWARNING);return;}
+    if(amount>1000){MessageBoxW(gMain,L"Amount or stack count is too large.",L"Invalid amount",MB_ICONWARNING);return;}
     std::ostringstream j;j<<"{\"type\":\""<<type<<"\",\"target\":\""<<target<<"\",\"chance\":"<<fmt(chance/100.0);
     if(type=="damage")j<<",\"damage_type\":\""<<effectDamageKey()<<"\",\"multiplier\":"<<fmt(value);
     else if(type=="heal")j<<",\"multiplier\":"<<fmt(value)<<",\"protection_multiplier\":"<<fmt(aux);
