@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include <shlobj.h>
+#include <objbase.h>
 
 #include "Ai.h"
 #include "Battle.h"
@@ -33,6 +34,7 @@
 
 #pragma comment(lib, "Comctl32.lib")
 #pragma comment(lib, "Shell32.lib")
+#pragma comment(lib, "Ole32.lib")
 
 namespace fs = std::filesystem;
 
@@ -245,6 +247,7 @@ std::string statusIdAtCombo(HWND h) {
     return i<gStatusIds.size()?gStatusIds[i]:std::string();
 }
 void fillStatusCombo(HWND h) {
+    gStatusIds.clear();
     addCombo(h,L"(No status)");
     SendMessageW(h,CB_SETITEMDATA,0,static_cast<LPARAM>(-1));
     if(!gContent)return;
@@ -410,7 +413,12 @@ void updateStatusDetail() {
     const auto& s=gContent->status(gFilteredStatuses[static_cast<size_t>(n)]);
     std::ostringstream o;o<<s.name<<"\r\nID: "<<s.id<<"\r\nType: "<<(s.kind==StatusKind::Buff?"Buff":s.kind==StatusKind::Debuff?"Debuff":"Neutral")
       <<"\r\nDefault duration: "<<s.duration<<(s.duration==-1?" (permanent)":" turns")<<"\r\nMaximum stacks: "<<s.maxStacks
-      <<"\r\nDispellable: "<<(s.dispellable?"Yes":"No")<<"\r\n\r\n"<<s.description;
+      <<"\r\nDispellable: "<<(s.dispellable?"Yes":"No")<<"\r\nFlags bitmask: "<<static_cast<unsigned long>(s.flags)
+      <<"\r\nMode: "<<static_cast<int>(s.mode)<<"\r\n\r\nDescription: "<<s.description;
+    if(!s.mods.empty()){o<<"\r\n\r\nStat modifiers:";for(const auto& m:s.mods)o<<"\r\n - "<<statName(m.stat)<<" ("<<(m.op==ModOp::Add?"add":"% of base")<<"): "<<m.value;}
+    if(!s.blocks.empty()){o<<"\r\n\r\nBlocks:";for(const auto& x:s.blocks)o<<"\r\n - "<<x;}
+    if(!s.excludes.empty()){o<<"\r\n\r\nExcluded by:";for(const auto& x:s.excludes)o<<"\r\n - "<<x;}
+    if(!s.triggers.empty())o<<"\r\n\r\nPassive reactions: "<<s.triggers.size();
     setText(gStatusDetail,fromUtf8(o.str()));
 }
 
@@ -653,6 +661,7 @@ LRESULT CALLBACK wndProc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
 } // namespace
 
 int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,PWSTR,int show) {
+    const HRESULT comResult=CoInitializeEx(nullptr,COINIT_APARTMENTTHREADED);
     INITCOMMONCONTROLSEX icc{sizeof(icc),ICC_STANDARD_CLASSES};InitCommonControlsEx(&icc);
     wchar_t exe[MAX_PATH]{};GetModuleFileNameW(nullptr,exe,MAX_PATH);gExeDir=fs::path(exe).parent_path();gDataDir=locateData();
     WNDCLASSEXW wc{sizeof(wc)};wc.lpfnWndProc=wndProc;wc.hInstance=instance;wc.hCursor=LoadCursorW(nullptr,IDC_ARROW);
@@ -662,5 +671,6 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,PWSTR,int show) {
       CW_USEDEFAULT,CW_USEDEFAULT,1280,1010,nullptr,nullptr,instance,nullptr);
     if(!w)return 1;ShowWindow(w,show);UpdateWindow(w);
     MSG m{};while(GetMessageW(&m,nullptr,0,0)>0){TranslateMessage(&m);DispatchMessageW(&m);}
+    if(SUCCEEDED(comResult))CoUninitialize();
     return static_cast<int>(m.wParam);
 }
