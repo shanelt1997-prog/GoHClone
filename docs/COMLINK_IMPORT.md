@@ -15,9 +15,11 @@ If your Comlink instance uses another address, set the Windows environment varia
 
 ## Download the game data
 
-Choose **DATA → Sync SWGOH game data (Comlink)**. GoHClone asks for confirmation, reads the current game-data version from `/metadata`, and requests `/data` with `requestSegment: 2` and `includePveUnits: false`. This is the segment containing the unit and ability definitions. The raw response is saved as:
+Choose **DATA → Sync SWGOH game data (Comlink)**. GoHClone asks for confirmation, reads the current game-data version from `/metadata`, and requests `/data` with `requestSegment: 2` (ability definitions) and `requestSegment: 3` (unit definitions), both with `includePveUnits: false`. It also requests the English (US) localization bundle. The three raw responses are saved as:
 
-`data/comlink/game-data.json`
+- `data/comlink/game-data-segment2.json`
+- `data/comlink/game-data-segment3.json`
+- `data/comlink/localization-eng-us.json`
 
 The download is deliberately cached separately from `data/content.json`; it does not overwrite your existing demo roster or change the battle engine's content.
 
