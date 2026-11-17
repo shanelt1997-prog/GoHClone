@@ -12,6 +12,11 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cctype>
+#include <cwctype>
+#include <cstdio>
+#include <cstdlib>
+#include <iterator>
 #include <cmath>
 #include <cstdint>
 #include <filesystem>
