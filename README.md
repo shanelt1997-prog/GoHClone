@@ -272,7 +272,7 @@ The application has a standard Windows menu bar:
 
 ### Adding a unit
 
-Choose **Roster → Add / edit unit**. Enter the unit name, level, tags and stats,
+Choose **Roster → Add new unit**. Enter the unit name, level, tags and stats,
 then build its kit in the ability editor. Add one Basic ability and as many Special,
 Ultimate, Leader and Unique abilities as required. Each active ability can contain
 multiple effects. The effect builder supports damage, healing, status application
