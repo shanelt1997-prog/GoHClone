@@ -78,6 +78,14 @@ const StatField kStats[] = {
 
 HWND gMain = nullptr;
 HFONT gFont = nullptr;
+HBRUSH gBackgroundBrush=nullptr, gPanelBrush=nullptr, gEditBrush=nullptr, gMenuBrush=nullptr;
+constexpr COLORREF kSpaceBlack=RGB(10,16,25);
+constexpr COLORREF kPanel=RGB(20,32,46);
+constexpr COLORREF kInput=RGB(13,24,36);
+constexpr COLORREF kGold=RGB(232,196,104);
+constexpr COLORREF kText=RGB(222,230,238);
+constexpr COLORREF kMuted=RGB(143,164,183);
+constexpr COLORREF kSelected=RGB(34,70,91);
 fs::path gExeDir, gDataDir;
 std::unique_ptr<Content> gContent;
 std::vector<HWND> gPage;
@@ -282,16 +290,16 @@ void showPage(int page) {
     if(page==0)createHome();else if(page==1)createUnitEditor();else if(page==2)createStatuses();else createSimulator();
 }
 void createHome() {
-    lab(L"GoHClone Desktop",30,28,700,42);
-    lab(L"A Windows programme for building test units and running data-driven squad battles.",30,74,1100,25);
-    group(L"PROJECT DATA",25,125,1160,190);
+    lab(L"GOHCLONE  //  TACTICAL HOLO-ARCHIVE",30,28,900,42);
+    lab(L"UNIT INTELLIGENCE  |  COMBAT ANALYSIS  |  GALACTIC DATA SYSTEM",30,74,1100,25);
+    group(L"HOLO-NET STATUS",25,125,1160,190);
     lab(L"Loaded roster",45,165,150);gHomeUnits=lab(L"",200,165,850,25);
     lab(L"Status definitions",45,210,150);gHomeCount=lab(L"",200,210,850,25);
     lab(L"Data folder",45,255,150);gHomeData=lab(L"",200,255,930,25);
     btn(L"Add a new unit",ID_HOME_ADD,30,355,180,42);
     btn(L"Browse buffs and debuffs",ID_HOME_STATUS,230,355,230,42);
     btn(L"Open battle simulator",ID_HOME_SIM,480,355,210,42);
-    group(L"QUICK NOTES",25,435,1160,180);
+    group(L"MISSION CONTROL",25,435,1160,180);
     lab(L"Use Roster > Add unit to create a complete multi-ability unit entry.",45,475,1080,25);
     lab(L"Use the status browser to search every status loaded from your JSON library.",45,515,1080,25);
     lab(L"Battle > Validate data checks all loaded unit, ability and status references.",45,555,1080,25);
@@ -645,21 +653,26 @@ void chooseDataFolder() {
     gDataDir=p;try{reloadData();showPage(0);}catch(const std::exception& e){MessageBoxW(gMain,fromUtf8(e.what()).c_str(),L"Data loading",MB_ICONERROR);}
 }
 void navigate(int p){showPage(p);}
+void appendMenuItem(HMENU menu,UINT id,const wchar_t* label) {
+    AppendMenuW(menu,MF_OWNERDRAW,id,reinterpret_cast<LPCWSTR>(label));
+}
 HMENU createMenuBar() {
     HMENU root=CreateMenu(),file=CreatePopupMenu(),roster=CreatePopupMenu(),battle=CreatePopupMenu(),help=CreatePopupMenu();
-    AppendMenuW(file,MF_STRING,M_FILE_SELECT,L"Choose data folder...");
-    AppendMenuW(file,MF_STRING,M_FILE_RELOAD,L"Reload project data");
-    AppendMenuW(file,MF_SEPARATOR,0,nullptr);AppendMenuW(file,MF_STRING,M_FILE_EXIT,L"Exit");
-    AppendMenuW(roster,MF_STRING,M_ROSTER_HOME,L"Overview");
-    AppendMenuW(roster,MF_STRING,M_ROSTER_ADD,L"Add new unit");
-    AppendMenuW(roster,MF_STRING,M_ROSTER_STATUS,L"Buff and debuff library");
-    AppendMenuW(battle,MF_STRING,M_BATTLE_SIM,L"Battle simulator");
-    AppendMenuW(battle,MF_STRING,M_BATTLE_VALIDATE,L"Validate loaded data");
-    AppendMenuW(help,MF_STRING,M_HELP_ABOUT,L"About GoHClone");
-    AppendMenuW(root,MF_POPUP,reinterpret_cast<UINT_PTR>(file),L"File");
-    AppendMenuW(root,MF_POPUP,reinterpret_cast<UINT_PTR>(roster),L"Roster");
-    AppendMenuW(root,MF_POPUP,reinterpret_cast<UINT_PTR>(battle),L"Battle");
-    AppendMenuW(root,MF_POPUP,reinterpret_cast<UINT_PTR>(help),L"Help");
+    appendMenuItem(file,M_FILE_SELECT,L"Choose data folder...");
+    appendMenuItem(file,M_FILE_RELOAD,L"Reload project data");
+    AppendMenuW(file,MF_SEPARATOR,0,nullptr);appendMenuItem(file,M_FILE_EXIT,L"Exit");
+    appendMenuItem(roster,M_ROSTER_HOME,L"Holotable overview");
+    appendMenuItem(roster,M_ROSTER_ADD,L"Create new unit");
+    appendMenuItem(roster,M_ROSTER_STATUS,L"Buff and debuff archive");
+    appendMenuItem(battle,M_BATTLE_SIM,L"Combat simulator");
+    appendMenuItem(battle,M_BATTLE_VALIDATE,L"Validate game data");
+    appendMenuItem(help,M_HELP_ABOUT,L"About GoHClone");
+    AppendMenuW(root,MF_POPUP|MF_OWNERDRAW,reinterpret_cast<UINT_PTR>(file),reinterpret_cast<LPCWSTR>(L"DATA"));
+    AppendMenuW(root,MF_POPUP|MF_OWNERDRAW,reinterpret_cast<UINT_PTR>(roster),reinterpret_cast<LPCWSTR>(L"ROSTER"));
+    AppendMenuW(root,MF_POPUP|MF_OWNERDRAW,reinterpret_cast<UINT_PTR>(battle),reinterpret_cast<LPCWSTR>(L"COMBAT"));
+    AppendMenuW(root,MF_POPUP|MF_OWNERDRAW,reinterpret_cast<UINT_PTR>(help),reinterpret_cast<LPCWSTR>(L"ARCHIVES"));
+    MENUINFO mi{sizeof(mi)};mi.fMask=MIM_BACKGROUND;mi.hbrBack=gMenuBrush;
+    SetMenuInfo(file,&mi);SetMenuInfo(roster,&mi);SetMenuInfo(battle,&mi);SetMenuInfo(help,&mi);
     return root;
 }
 LRESULT CALLBACK wndProc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
@@ -667,8 +680,33 @@ LRESULT CALLBACK wndProc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
     case WM_CREATE:{
         gMain=hwnd;
         gFont=CreateFontW(-18,0,0,0,FW_NORMAL,FALSE,FALSE,FALSE,DEFAULT_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,CLEARTYPE_QUALITY,DEFAULT_PITCH|FF_DONTCARE,L"Segoe UI");
+        gBackgroundBrush=CreateSolidBrush(kSpaceBlack);gPanelBrush=CreateSolidBrush(kPanel);gEditBrush=CreateSolidBrush(kInput);gMenuBrush=CreateSolidBrush(kPanel);
         SetMenu(hwnd,createMenuBar());
         showPage(0);return 0;
+    }
+    case WM_ERASEBKGND:{RECT r{};GetClientRect(hwnd,&r);FillRect(reinterpret_cast<HDC>(wp),&r,gBackgroundBrush);return 1;}
+    case WM_CTLCOLORSTATIC:{
+        HDC dc=reinterpret_cast<HDC>(wp);SetTextColor(dc,kText);SetBkColor(dc,kSpaceBlack);SetBkMode(dc,TRANSPARENT);return reinterpret_cast<LRESULT>(gBackgroundBrush);
+    }
+    case WM_CTLCOLOREDIT:case WM_CTLCOLORLISTBOX:case WM_CTLCOLORSCROLLBAR:{
+        HDC dc=reinterpret_cast<HDC>(wp);SetTextColor(dc,kText);SetBkColor(dc,kInput);return reinterpret_cast<LRESULT>(gEditBrush);
+    }
+    case WM_CTLCOLORBTN:{
+        HDC dc=reinterpret_cast<HDC>(wp);SetTextColor(dc,kGold);SetBkColor(dc,kPanel);return reinterpret_cast<LRESULT>(gPanelBrush);
+    }
+    case WM_MEASUREITEM:{
+        auto* m=reinterpret_cast<MEASUREITEMSTRUCT*>(lp);
+        if(m->CtlType==ODT_MENU){const wchar_t* label=reinterpret_cast<const wchar_t*>(m->itemData);HDC dc=GetDC(hwnd);SIZE z{};HFONT old=static_cast<HFONT>(SelectObject(dc,gFont));GetTextExtentPoint32W(dc,label,static_cast<int>(wcslen(label)),&z);SelectObject(dc,old);ReleaseDC(hwnd,dc);m->itemWidth=static_cast<UINT>(z.cx+38);m->itemHeight=34;return TRUE;}
+        break;
+    }
+    case WM_DRAWITEM:{
+        auto* d=reinterpret_cast<DRAWITEMSTRUCT*>(lp);
+        if(d->CtlType==ODT_MENU){const wchar_t* label=reinterpret_cast<const wchar_t*>(d->itemData);const bool selected=(d->itemState&ODS_SELECTED)!=0;
+            HBRUSH brush=CreateSolidBrush(selected?kSelected:kPanel);FillRect(d->hDC,&d->rcItem,brush);DeleteObject(brush);
+            SetBkMode(d->hDC,TRANSPARENT);SetTextColor(d->hDC,selected?kGold:kText);HFONT old=static_cast<HFONT>(SelectObject(d->hDC,gFont));
+            RECT r=d->rcItem;r.left+=18;DrawTextW(d->hDC,label,-1,&r,DT_SINGLELINE|DT_VCENTER|DT_LEFT);
+            SelectObject(d->hDC,old);return TRUE;}
+        break;
     }
     case WM_COMMAND:{
         int id=LOWORD(wp),code=HIWORD(wp);
@@ -699,7 +737,12 @@ LRESULT CALLBACK wndProc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
         if(gSimOutput&&result)setText(gSimOutput,fromUtf8(result->text));return 0;
     }
     case WM_GETMINMAXINFO:{auto* m=reinterpret_cast<MINMAXINFO*>(lp);m->ptMinTrackSize.x=1260;m->ptMinTrackSize.y=930;return 0;}
-    case WM_DESTROY:if(gWorker.joinable())gWorker.join();if(gFont)DeleteObject(gFont);PostQuitMessage(0);return 0;
+    case WM_DESTROY:
+        if(gWorker.joinable())gWorker.join();
+        if(gFont)DeleteObject(gFont);
+        if(gBackgroundBrush)DeleteObject(gBackgroundBrush);if(gPanelBrush)DeleteObject(gPanelBrush);
+        if(gEditBrush)DeleteObject(gEditBrush);if(gMenuBrush)DeleteObject(gMenuBrush);
+        PostQuitMessage(0);return 0;
     }
     return DefWindowProcW(hwnd,msg,wp,lp);
 }
@@ -710,7 +753,7 @@ int WINAPI wWinMain(HINSTANCE instance,HINSTANCE,PWSTR,int show) {
     INITCOMMONCONTROLSEX icc{sizeof(icc),ICC_STANDARD_CLASSES};InitCommonControlsEx(&icc);
     wchar_t exe[MAX_PATH]{};GetModuleFileNameW(nullptr,exe,MAX_PATH);gExeDir=fs::path(exe).parent_path();gDataDir=locateData();
     WNDCLASSEXW wc{sizeof(wc)};wc.lpfnWndProc=wndProc;wc.hInstance=instance;wc.hCursor=LoadCursorW(nullptr,IDC_ARROW);
-    wc.hIcon=LoadIconW(nullptr,IDI_APPLICATION);wc.hbrBackground=reinterpret_cast<HBRUSH>(COLOR_BTNFACE+1);wc.lpszClassName=kWindowClass;
+    wc.hIcon=LoadIconW(nullptr,IDI_APPLICATION);wc.hbrBackground=CreateSolidBrush(kSpaceBlack);wc.lpszClassName=kWindowClass;
     if(!RegisterClassExW(&wc))return 1;
     HWND w=CreateWindowExW(0,kWindowClass,L"GoHClone - Unit Builder and Battle Simulator",WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT,CW_USEDEFAULT,1280,1010,nullptr,nullptr,instance,nullptr);
