@@ -308,3 +308,11 @@ in the solution as a separate project.
 
 A Windows GitHub Actions workflow builds the full x64 solution and uploads the
 desktop executable and its copied data folder as an artifact.
+
+
+## Star Wars-inspired desktop theme
+
+The star-wars-ui branch adds a dark holotable-inspired visual theme to the native
+Windows desktop application: deep space/navy surfaces, gold-highlighted owner-drawn
+menus, light text, dark input fields, and updated Galactic Database dashboard wording.
+The existing unit editor, status browser and simulator workflows are retained.
