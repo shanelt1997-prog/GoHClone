@@ -715,23 +715,38 @@ void syncComlink() {
             std::string version=metadata.str("latestGamedataVersion");
             if(version.empty())if(const auto* p=metadata.find("data"))version=p->str("latestGamedataVersion");
             if(version.empty())throw std::runtime_error("Comlink metadata did not contain latestGamedataVersion.");
-            const std::string request="{\"payload\":{\"version\":\""+escapeJson(version)+"\",\"includePveUnits\":false,\"requestSegment\":2},\"enums\":false}";
-            const std::string gameData=httpRequest(base+L"/data",L"POST",request);
-            json::Value parsed=json::parse(gameData);
-            if(!parsed.isObj())throw std::runtime_error("Comlink returned game data in an unexpected format.");
+            const std::string request2="{\"payload\":{\"version\":\""+escapeJson(version)+"\",\"includePveUnits\":false,\"requestSegment\":2},\"enums\":false}";
+            const std::string request3="{\"payload\":{\"version\":\""+escapeJson(version)+"\",\"includePveUnits\":false,\"requestSegment\":3},\"enums\":false}";
+            const std::string segment2=httpRequest(base+L"/data",L"POST",request2);
+            const std::string segment3=httpRequest(base+L"/data",L"POST",request3);
+            json::Value parsed2=json::parse(segment2),parsed3=json::parse(segment3);
+            if(!parsed2.isObj()||!parsed3.isObj())throw std::runtime_error("Comlink returned game data in an unexpected format.");
+            std::string localizationVersion=metadata.str("latestLocalizationBundleVersion");
+            if(localizationVersion.empty())throw std::runtime_error("Comlink metadata did not contain latestLocalizationBundleVersion.");
+            const std::string localizationRequest="{\"payload\":{\"id\":\""+escapeJson(localizationVersion)+"\",\"language\":\"ENG_US\"},\"unzip\":true}";
+            const std::string localization=httpRequest(base+L"/localization",L"POST",localizationRequest);
+            json::parse(localization);
             fs::create_directories(destination);
-            std::ofstream out(destination/"game-data.json",std::ios::binary|std::ios::trunc);
-            if(!out)throw std::runtime_error("Could not write data/comlink/game-data.json.");
-            out.write(gameData.data(),static_cast<std::streamsize>(gameData.size()));
-            if(!out)throw std::runtime_error("Failed while saving the Comlink game-data file.");
-            size_t units=0;
-            if(const auto* u=parsed.find("units"))if(u->isArr())units=u->a.size();
+            auto save=[&](const fs::path& path,const std::string& data){
+                std::ofstream out(path,std::ios::binary|std::ios::trunc);
+                if(!out)throw std::runtime_error("Could not write "+path.string()+".");
+                out.write(data.data(),static_cast<std::streamsize>(data.size()));
+                if(!out)throw std::runtime_error("Failed while saving "+path.string()+".");
+            };
+            save(destination/"game-data-segment2.json",segment2);
+            save(destination/"game-data-segment3.json",segment3);
+            save(destination/"localization-eng-us.json",localization);
+            size_t units=0,abilities=0;
+            if(const auto* u=parsed3.find("units"))if(u->isArr())units=u->a.size();
+            if(const auto* a=parsed2.find("ability"))if(a->isArr())abilities=a->a.size();
             result->ok=true;
             result->text="Comlink game data downloaded successfully.\r\n\r\nGame-data version: "+version+
-                "\r\nDownloaded: "+std::to_string(gameData.size()/1024)+" KB"+
-                "\r\nUnit definitions in response: "+std::to_string(units)+
-                "\r\n\r\nSaved to:\r\n"+(destination/"game-data.json").string()+
-                "\r\n\r\nThis is the raw character/ability source cache. Character import and stat/ability conversion are separate steps; the raw game data is not yet a ready-to-run GoHClone roster.";
+                "\r\nLocalization version: "+localizationVersion+
+                "\r\nUnit definitions: "+std::to_string(units)+
+                "\r\nAbility definitions: "+std::to_string(abilities)+
+                "\r\nTotal downloaded: "+std::to_string((segment2.size()+segment3.size()+localization.size())/1024)+" KB"+
+                "\r\n\r\nSaved under:\r\n"+destination.string()+
+                "\r\n\r\nThese are the raw character/ability source files. Character import and stat/ability conversion are separate steps; this cache is not yet a ready-to-run GoHClone roster.";
         }catch(const std::exception& e){result->text=std::string("Comlink sync failed:\r\n")+e.what();}
         PostMessageW(gMain,WM_APP+10,0,reinterpret_cast<LPARAM>(result.release()));
     });
