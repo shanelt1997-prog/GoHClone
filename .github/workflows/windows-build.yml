@@ -2,7 +2,7 @@ name: Windows build
 
 on:
   push:
-    branches: [desktop-gui-v2]
+    branches: [desktop-gui-v2, star-wars-ui]
   pull_request:
     branches: [master]
   workflow_dispatch:
