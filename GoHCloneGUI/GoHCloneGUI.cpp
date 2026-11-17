@@ -707,7 +707,7 @@ void syncComlink() {
        L"\r\n\r\nComlink must already be running. Continue?").c_str(),L"SWGOH Comlink",MB_ICONQUESTION|MB_YESNO)!=IDYES)return;
     fs::path destination=gDataDir/"comlink";
     gBusy=true;
-    std::thread([base,destination](){
+    gWorker=std::thread([base,destination](){
         auto result=std::make_unique<ComlinkResult>();
         try{
             const std::string metadataText=httpRequest(base+L"/metadata",L"POST","{}");
