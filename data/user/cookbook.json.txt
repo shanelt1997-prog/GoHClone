@@ -1,0 +1,114 @@
+{
+  // COOKBOOK: one ability per common pattern, ready to copy into your own unit.
+  // This file is checked by `GoHClone selftest` (every recipe is actually executed), so it always works.
+  // Copy it to cookbook.json to see the unit in the team builder.
+
+  "units": [
+    {
+      "id": "cookbook_unit",
+      "name": "Cookbook Unit",
+      "tags": ["cookbook", "attacker"],
+      "stats": {"health": 50000, "protection": 40000, "speed": 220, "physical_damage": 8000, "special_damage": 6000,
+                "armor": 400, "resistance": 300, "phys_crit_pct": 30, "crit_damage_pct": 170, "potency_pct": 90, "tenacity_pct": 30},
+
+      "abilities": [
+        // 1. BASIC attack (every unit needs exactly one).
+        {"id": "rc_basic", "name": "Basic Attack", "kind": "basic", "pick": "enemy",
+         "effects": [{"type": "damage", "damage_type": "attack_damage", "multiplier": 1.65}]},
+
+        // 2. Special damage (uses Special Damage and Resistance) with a 30% chance to Ability Block.
+        {"id": "rc_special_damage", "name": "Special Damage", "kind": "special", "pick": "enemy", "cooldown": 2,
+         "effects": [{"type": "damage", "damage_type": "ability_power", "multiplier": 2.0,
+                      "on_hit": [{"type": "apply_status", "status": "ability_block", "chance": 0.3}]}]},
+
+        // 3. Area attack: every enemy takes damage, each with an 80% chance of Offense Down.
+        {"id": "rc_area", "name": "Area Attack", "kind": "special", "pick": "none", "cooldown": 3,
+         "effects": [{"type": "damage", "damage_type": "attack_damage", "multiplier": 1.5, "target": "all_enemies",
+                      "on_hit": [{"type": "apply_status", "status": "offense_down", "chance": 0.8}]}]},
+
+        // 4. Heal one ally for 30% health and 20% protection, cleanse their debuffs.
+        {"id": "rc_heal_one", "name": "Heal One", "kind": "special", "pick": "ally", "cooldown": 3,
+         "effects": [{"type": "heal", "target": "selected_ally", "multiplier": 0.3, "protection_multiplier": 0.2},
+                     {"type": "dispel", "dispel": "debuff", "target": "selected_ally"}],
+         "ai": {"ally_rules": ["lowest_health_pct"], "nodes": [{"type": "single_health", "group": "ally", "modifier": "less_than", "param": 70}]}},
+
+        // 5. Heal the team and give them Heal Over Time (the amount per turn is a share of max health).
+        {"id": "rc_heal_team", "name": "Heal Team", "kind": "special", "pick": "none", "cooldown": 4,
+         "effects": [{"type": "heal", "target": "all_allies", "multiplier": 0.1},
+                     {"type": "apply_status", "status": "heal_over_time", "target": "all_allies", "duration": 2, "amount": 0.1}]},
+
+        // 6. Team buff plus turn meter.
+        {"id": "rc_team_buff", "name": "Team Buff", "kind": "special", "pick": "none", "cooldown": 4,
+         "effects": [{"type": "apply_status", "status": "offense_up", "target": "all_allies", "duration": 2},
+                     {"type": "modify_turn_meter", "amount": 0.1, "target": "all_allies"}]},
+
+        // 7. Self buffs: Taunt, Defense Up and a Protection Up worth 25% of max health.
+        {"id": "rc_self_buff", "name": "Self Buff", "kind": "special", "pick": "self", "cooldown": 3,
+         "effects": [{"type": "apply_status", "status": "taunt", "target": "self", "duration": 2},
+                     {"type": "apply_status", "status": "defense_up", "target": "self", "duration": 2},
+                     {"type": "apply_status", "status": "protection_up", "target": "self", "duration": 2, "amount": 0.25}]},
+
+        // 8. Turn meter control: strip 50% of an enemy's turn meter (potency vs tenacity applies) and maybe Stun.
+        {"id": "rc_tm_control", "name": "Turn Meter Control", "kind": "special", "pick": "enemy", "cooldown": 3,
+         "effects": [{"type": "modify_turn_meter", "amount": -0.5, "target": "selected"},
+                     {"type": "apply_status", "status": "stun", "target": "selected", "chance": 0.5, "duration": 1}]},
+
+        // 9. Reset the cooldowns of every ally's specials (-99 = "as far down as it goes").
+        {"id": "rc_reset_cooldowns", "name": "Reset Cooldowns", "kind": "special", "pick": "none", "cooldown": 5,
+         "effects": [{"type": "modify_cooldown", "ability": "*", "amount": -99, "target": "all_allies"}]},
+
+        // 10. Bonus attack: hit, then immediately attack the same target again for half damage.
+        {"id": "rc_bonus_attack", "name": "Bonus Attack", "kind": "special", "pick": "enemy", "cooldown": 3,
+         "effects": [{"type": "damage", "damage_type": "attack_damage", "multiplier": 2.0},
+                     {"type": "use_ability", "ability": "rc_basic", "target": "selected", "multiplier": 0.5, "out_of_turn": true}]},
+
+        // 11. Call allies in: every other Attacker assists for 50% damage.
+        {"id": "rc_call_assists", "name": "Call Assists", "kind": "special", "pick": "enemy", "cooldown": 3,
+         "effects": [{"type": "damage", "damage_type": "attack_damage", "multiplier": 1.8},
+                     {"type": "assist", "multiplier": 0.5, "target": {"select": "all", "side": "ally", "any_tags": ["attacker"], "exclude_self": true}}]},
+
+        // 12. True damage: 10% of the target's max health, ignoring armor, protection and evasion.
+        {"id": "rc_true_damage", "name": "True Damage", "kind": "special", "pick": "enemy", "cooldown": 3,
+         "effects": [{"type": "damage", "damage_type": "unmitigable", "basis": "target_max_health", "multiplier": 0.1,
+                      "ignore_protection": true, "can_evade": false}]},
+
+        // 13. Conditional bonus damage: extra if the target is below 50% health, more if it is bleeding.
+        {"id": "rc_conditional", "name": "Conditional Bonus", "kind": "special", "pick": "enemy", "cooldown": 3,
+         "effects": [{"type": "damage", "damage_type": "attack_damage", "multiplier": 1.7},
+                     {"type": "damage", "damage_type": "attack_damage", "multiplier": 0.8, "if_target_health_below": 0.5},
+                     {"type": "damage", "damage_type": "attack_damage", "multiplier": 0.8, "if_target_has_status": "bleed"}]},
+
+        // 14. Revive a defeated ally with 50% health.
+        {"id": "rc_revive", "name": "Revive Ally", "kind": "special", "pick": "dead_ally", "cooldown": 6,
+         "effects": [{"type": "revive", "amount": 0.5, "target": "selected_dead_ally"}]},
+
+        // 15. Execute: instantly defeat an enemy that is below 15% health.
+        {"id": "rc_execute", "name": "Execute", "kind": "special", "pick": "enemy", "cooldown": 3,
+         "effects": [{"type": "defeat", "target": "selected", "if_target_health_below": 0.15}]},
+
+        // 16. ULTIMATE: needs 100 charge. A passive below fills it (25 per attack).
+        {"id": "rc_ultimate", "name": "Ultimate", "kind": "ultimate", "pick": "none", "ultimate_charge": 100,
+         "effects": [{"type": "damage", "damage_type": "ability_power", "multiplier": 3.5, "target": "all_enemies"}]},
+        {"id": "rc_charge", "name": "Charging", "kind": "unique",
+         "triggers": [{"on": "attack", "scope": "self", "effects": [{"type": "modify_ultimate", "amount": 25, "target": "self"}]}]},
+
+        // 17. PASSIVE TRIGGERS. When an ally is defeated: Offense Up. 30% chance when damaged: Protection Up.
+        {"id": "rc_passives", "name": "Passive Triggers", "kind": "unique",
+         "triggers": [
+           {"on": "death", "scope": "ally", "effects": [{"type": "apply_status", "status": "offense_up", "target": "self", "duration": 2}]},
+           {"on": "receive_damage", "scope": "self", "chance": 0.3, "once_per_turn": true,
+            "effects": [{"type": "apply_status", "status": "protection_up", "target": "self", "duration": 2}]}]},
+
+        // 18. START OF BATTLE: gain Stealth and 30% turn meter.
+        {"id": "rc_opening", "name": "Opening Move", "kind": "unique",
+         "triggers": [{"on": "start_of_battle", "scope": "self",
+                       "effects": [{"type": "apply_status", "status": "stealth", "target": "self", "duration": 2},
+                                   {"type": "modify_turn_meter", "amount": 0.3, "target": "self"}]}]},
+
+        // 19. LEADER ability: a permanent buff for every ally with the "cookbook" tag (only works if this unit leads).
+        {"id": "rc_leader", "name": "Leader Aura", "kind": "leader",
+         "auras": [{"target": {"select": "all", "side": "ally", "any_tags": ["cookbook"]}, "status": "keen_stratagem"}]}
+      ]
+    }
+  ]
+}

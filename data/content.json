@@ -1,0 +1,327 @@
+{
+  // All content here is original placeholder content. Stat values are tuning choices, not
+  // data from any commercial game. Percent-style values are fractions (0.25 = 25%).
+
+  "statuses": [
+    // Roster-specific passives applied by leader / unique abilities. The generic buff and debuff library
+    // (offense_up, stun, bleed, ...) lives in data/library/statuses.json.
+    {"id":"vanguard_banner","name":"Vanguard Banner","kind":"buff","duration":-1,"dispellable":false,
+     "description":"Concord allies: +20% offense, +15% critical damage",
+     "mods":[{"stat":"offense","op":"pct_base","value":0.2},{"stat":"crit_damage","op":"add","value":0.15}]},
+    {"id":"iron_discipline","name":"Iron Discipline","kind":"buff","duration":-1,"dispellable":false,
+     "description":"Syndicate allies: +25% defense, +15% tenacity",
+     "mods":[{"stat":"defense","op":"pct_base","value":0.25},{"stat":"tenacity","op":"add","value":0.15}]},
+    {"id":"counter_stance","name":"Counter Stance","kind":"buff","duration":-1,"dispellable":false,
+     "description":"+35% counter chance",
+     "mods":[{"stat":"counter_chance","op":"add","value":0.35}]},
+    {"id":"engineer_focus","name":"Engineer Focus","kind":"buff","duration":-1,"dispellable":false,
+     "description":"+25% potency",
+     "mods":[{"stat":"potency","op":"add","value":0.25}]},
+    {"id":"exposed","name":"Weakness","kind":"debuff","duration":2,
+     "description":"takes 25% more damage (original demo effect, not a game effect)",
+     "mods":[{"stat":"damage_taken_mult","op":"add","value":0.25}]}
+  ],
+
+  "units": [
+    // ======================================================= CONCORD =============
+    {
+      "id":"aria_vance","name":"Captain Aria Vance","tags":["concord","human","attacker","officer"],
+      // Optional front-end hints (the simulation ignores them). Anything omitted is derived:
+      // prefab "units/<id>", portrait "portraits/<id>", clips idle/hit/death/victory.
+      "presentation":{"prefab":"units/aria_vance","portrait":"portraits/aria_vance",
+                      "clips":{"idle":"idle","hit":"hit_react","death":"death","victory":"cheer"}},
+      "stats":{"health":45000,"protection":41000,"speed":218,"physical_damage":7200,"special_damage":1800,
+               "armor":360,"resistance":260,"phys_crit":0.34,"spec_crit":0.10,"crit_damage":1.85,
+               "potency":0.35,"tenacity":0.25,"accuracy":0.05,"crit_avoid":0.10},
+      "abilities":[
+        {"id":"service_pistol","name":"Service Pistol","kind":"basic","pick":"enemy",
+         "description":"Deal physical damage to target enemy.",
+         "effects":[{"type":"damage","damage_type":"attack_damage","multiplier":1.645}]},
+        {"id":"command_fire","name":"Command Fire","kind":"special","pick":"enemy","cooldown":3,
+         "presentation":{"template":"ranged","anim":"command_fire","vfx":"muzzle_flash_heavy","sfx":"sfx_rifle_heavy"},
+         "description":"Deal heavy physical damage to target enemy; other Concord allies gain 15% turn meter.",
+         "effects":[
+           {"type":"damage","damage_type":"attack_damage","multiplier":2.4},
+           {"type":"modify_turn_meter","amount":0.15,"target":{"select":"all","side":"ally","any_tags":["concord"],"exclude_self":true}}],
+         "ai":{"enemy_rules":["lowest_health_pct"]}},
+        {"id":"vanguard_banner","name":"Vanguard Banner","kind":"leader",
+         "description":"Concord allies have +20% Offense and +15% Crit Damage.",
+         "auras":[{"target":{"select":"all","side":"ally","any_tags":["concord"]},"status":"vanguard_banner"}]},
+        {"id":"covering_fire","name":"Covering Fire","kind":"unique",
+         "description":"When Aria uses a basic ability on her turn, other Attackers assist for 50% damage.",
+         "triggers":[{"on":"attack","scope":"self","ability_kind":["basic"],"in_turn":true,
+           "effects":[{"type":"assist","multiplier":0.5,"target":{"select":"all","side":"ally","any_tags":["attacker"],"exclude_self":true}}]}]},
+        {"id":"steady_aim","name":"Steady Aim","kind":"unique",
+         "description":"When Aria lands a critical hit she gains Crit Damage Up for 2 turns.",
+         "triggers":[{"on":"crit","scope":"self","once_per_turn":true,
+           "effects":[{"type":"apply_status","status":"crit_damage_up","duration":2,"target":"self"}]}]}
+      ]
+    },
+    {
+      "id":"brask_orrin","name":"Sgt. Brask Orrin","tags":["concord","human","tank"],
+      "stats":{"health":60000,"protection":62000,"speed":160,"physical_damage":2800,"special_damage":1500,
+               "armor":640,"resistance":420,"phys_crit":0.15,"crit_damage":1.5,
+               "potency":0.30,"tenacity":0.55,"crit_avoid":0.20},
+      "abilities":[
+        {"id":"shield_bash","name":"Shield Bash","kind":"basic","pick":"enemy",
+         "description":"Deal physical damage to target enemy.",
+         "effects":[{"type":"damage","damage_type":"attack_damage","multiplier":1.4}]},
+        {"id":"hold_the_line","name":"Hold the Line","kind":"special","pick":"self","cooldown":3,
+         "description":"Gain Taunt, Defense Up and Protection Up (25%) for 2 turns.",
+         "effects":[
+           {"type":"apply_status","status":"taunt","target":"self","duration":2},
+           {"type":"apply_status","status":"defense_up","target":"self","duration":2},
+           {"type":"apply_status","status":"protection_up","target":"self","duration":2,"amount":0.25}]},
+        {"id":"bulwark","name":"Bulwark","kind":"unique",
+         "description":"Has a 35% chance to counterattack when damaged. The first time Brask falls below 40% health he gains Protection Up (50%) and Offense Up for 3 turns.",
+         "auras":[{"target":"self","status":"counter_stance"}],
+         "triggers":[{"on":"receive_damage","scope":"self","health_below":0.4,"limit":1,
+           "effects":[
+             {"type":"apply_status","status":"protection_up","amount":0.5,"duration":3,"target":"self"},
+             {"type":"apply_status","status":"offense_up","duration":3,"target":"self"}]}]}
+      ]
+    },
+    {
+      "id":"elin_moss","name":"Dr. Elin Moss","tags":["concord","human","healer","support"],
+      "stats":{"health":42000,"protection":38000,"speed":190,"physical_damage":1500,"special_damage":5200,
+               "armor":240,"resistance":330,"spec_crit":0.20,"crit_damage":1.5,
+               "potency":0.45,"tenacity":0.40,"crit_avoid":0.10},
+      "abilities":[
+        {"id":"med_dart","name":"Med Dart","kind":"basic","pick":"enemy",
+         "description":"Deal special damage to target enemy.",
+         "effects":[{"type":"damage","damage_type":"ability_power","multiplier":1.5}]},
+        {"id":"field_surgery","name":"Field Surgery","kind":"special","pick":"ally","cooldown":3,
+         "description":"Heal target ally for 50% health and 40% protection, dispel their debuffs, and grant Heal Over Time.",
+         "effects":[
+           {"type":"heal","target":"selected_ally","multiplier":0.5,"protection_multiplier":0.4},
+           {"type":"dispel","dispel":"debuff","target":"selected_ally"},
+           {"type":"apply_status","status":"heal_over_time","target":"selected_ally","duration":2}],
+         "ai":{"ally_rules":["lowest_health_pct"],
+               "nodes":[{"type":"single_health","group":"ally","modifier":"less_than","param":70}]}},
+        {"id":"triage_pulse","name":"Triage Pulse","kind":"special","pick":"none","cooldown":4,
+         "description":"Heal all allies for 12% health and 15% protection and grant Protection Up (10%).",
+         "effects":[
+           {"type":"heal","target":"all_allies","multiplier":0.12,"protection_multiplier":0.15},
+           {"type":"apply_status","status":"protection_up","target":"all_allies","duration":2,"amount":0.1}],
+         "ai":{"nodes":[{"type":"median_health","group":"ally","modifier":"less_than","param":75}]}},
+        {"id":"healers_oath","name":"Healer's Oath","kind":"unique",
+         "description":"When a Concord ally is defeated, Elin gains 30% turn meter.",
+         "triggers":[{"on":"death","scope":"ally","tags":["concord"],
+           "effects":[{"type":"modify_turn_meter","amount":0.3,"target":"self"}]}]}
+      ]
+    },
+    {
+      "id":"kade_orlan","name":"Kade Orlan","tags":["concord","human","attacker","assassin"],
+      "stats":{"health":36000,"protection":28000,"speed":262,"physical_damage":7800,"special_damage":1200,
+               "armor":260,"resistance":180,"phys_crit":0.45,"crit_damage":2.0,
+               "potency":0.30,"tenacity":0.15,"accuracy":0.10,"dodge":0.12,"crit_avoid":0.05},
+      "abilities":[
+        {"id":"throwing_knife","name":"Throwing Knife","kind":"basic","pick":"enemy",
+         "description":"Deal physical damage to target enemy.",
+         "effects":[{"type":"damage","damage_type":"attack_damage","multiplier":1.645}]},
+        {"id":"ambush","name":"Ambush","kind":"special","pick":"enemy","cooldown":3,
+         "description":"Deal heavy physical damage to target enemy and gain Stealth for 2 turns.",
+         "effects":[
+           {"type":"damage","damage_type":"attack_damage","multiplier":2.8},
+           {"type":"apply_status","status":"stealth","target":"self","duration":2}],
+         "ai":{"enemy_rules":["lowest_health_pct"]}},
+        {"id":"predator","name":"Predator","kind":"unique",
+         "description":"When Kade defeats an enemy he takes a bonus turn.",
+         "triggers":[{"on":"kill","scope":"self","once_per_turn":true,
+           "effects":[{"type":"bonus_move","target":"self"}]}]}
+      ]
+    },
+    {
+      "id":"nyx_halloran","name":"Nyx Halloran","tags":["concord","support","pilot"],
+      "stats":{"health":40000,"protection":34000,"speed":245,"physical_damage":2200,"special_damage":4600,
+               "armor":250,"resistance":300,"spec_crit":0.25,"crit_damage":1.5,
+               "potency":0.70,"tenacity":0.30,"crit_avoid":0.10},
+      "abilities":[
+        {"id":"tangler_shot","name":"Tangler Shot","kind":"basic","pick":"enemy",
+         "description":"Deal special damage to target enemy.",
+         "effects":[{"type":"damage","damage_type":"ability_power","multiplier":1.5}]},
+        {"id":"overclock","name":"Overclock","kind":"special","pick":"none","cooldown":4,
+         "description":"All allies gain 35% turn meter and Speed Up for 2 turns.",
+         "effects":[
+           {"type":"modify_turn_meter","amount":0.35,"target":"all_allies"},
+           {"type":"apply_status","status":"speed_up","target":"all_allies","duration":2}]},
+        {"id":"signal_boost","name":"Signal Boost","kind":"unique",
+         "description":"When another Concord ally lands a critical hit, Nyx gains 5% turn meter.",
+         "triggers":[{"on":"crit","scope":"ally","tags":["concord"],"once_per_turn":true,
+           "effects":[{"type":"modify_turn_meter","amount":0.05,"target":"self"}]}]}
+      ]
+    },
+    {
+      "id":"tomas_rhee","name":"Tomas Rhee","tags":["concord","human","debuffer","engineer"],
+      "stats":{"health":38000,"protection":33000,"speed":205,"physical_damage":3200,"special_damage":8200,
+               "armor":280,"resistance":340,"spec_crit":0.22,"crit_damage":1.6,
+               "potency":0.90,"tenacity":0.20,"crit_avoid":0.10},
+      "abilities":[
+        {"id":"arc_welder","name":"Arc Welder","kind":"basic","pick":"enemy",
+         "description":"Deal physical damage to target enemy with a 40% chance to inflict Bleed.",
+         "effects":[{"type":"damage","damage_type":"attack_damage","multiplier":1.5,
+           "on_hit":[{"type":"apply_status","status":"bleed","chance":0.4,"duration":2}]}]},
+        {"id":"corrosive_charge","name":"Corrosive Charge","kind":"special","pick":"none","cooldown":3,
+         "description":"Deal special damage to all enemies with an 80% chance to inflict Defense Down.",
+         "effects":[{"type":"damage","damage_type":"ability_power","multiplier":2.2,"target":"all_enemies",
+           "on_hit":[{"type":"apply_status","status":"defense_down","chance":0.8,"duration":2}]}]},
+        {"id":"field_expedient","name":"Field Expedient","kind":"unique",
+         "description":"Tomas has +25% Potency.",
+         "auras":[{"target":"self","status":"engineer_focus"}]}
+      ]
+    },
+
+    // ====================================================== SYNDICATE ============
+    {
+      "id":"warden_krell","name":"Warden Krell","tags":["syndicate","human","tank"],
+      "stats":{"health":62000,"protection":64000,"speed":178,"physical_damage":3400,"special_damage":1400,
+               "armor":620,"resistance":400,"phys_crit":0.12,"crit_damage":1.5,
+               "potency":0.35,"tenacity":0.60,"crit_avoid":0.20},
+      "abilities":[
+        {"id":"baton_strike","name":"Baton Strike","kind":"basic","pick":"enemy",
+         "description":"Deal physical damage to target enemy.",
+         "effects":[{"type":"damage","damage_type":"attack_damage","multiplier":1.4}]},
+        {"id":"intimidate","name":"Intimidate","kind":"special","pick":"none","cooldown":3,
+         "description":"Gain Taunt for 2 turns and inflict Offense Down on all enemies (80% chance).",
+         "effects":[
+           {"type":"apply_status","status":"taunt","target":"self","duration":2},
+           {"type":"apply_status","status":"offense_down","target":"all_enemies","chance":0.8,"duration":2}]},
+        {"id":"iron_discipline","name":"Iron Discipline","kind":"leader",
+         "description":"Syndicate allies have +25% Defense and +15% Tenacity.",
+         "auras":[{"target":{"select":"all","side":"ally","any_tags":["syndicate"]},"status":"iron_discipline"}]},
+        {"id":"retaliation","name":"Retaliation","kind":"unique",
+         "description":"Has a 35% chance to counterattack when damaged.",
+         "auras":[{"target":"self","status":"counter_stance"}]}
+      ]
+    },
+    {
+      "id":"vexa_thorne","name":"Vexa Thorne","tags":["syndicate","mystic","attacker","caster"],
+      "stats":{"health":38000,"protection":30000,"speed":232,"physical_damage":1800,"special_damage":6600,
+               "armor":220,"resistance":400,"spec_crit":0.38,"crit_damage":1.9,
+               "potency":0.50,"tenacity":0.20,"crit_avoid":0.10},
+      "abilities":[
+        {"id":"hex_bolt","name":"Hex Bolt","kind":"basic","pick":"enemy",
+         "description":"Deal special damage to target enemy.",
+         "effects":[{"type":"damage","damage_type":"ability_power","multiplier":1.645}]},
+        {"id":"void_nova","name":"Void Nova","kind":"special","pick":"none","cooldown":3,
+         "description":"Deal special damage to all enemies with a 50% chance to inflict Exposed.",
+         "effects":[{"type":"damage","damage_type":"ability_power","multiplier":2.1,"target":"all_enemies",
+           "on_hit":[{"type":"apply_status","status":"exposed","chance":0.5,"duration":2}]}]},
+        {"id":"cataclysm","name":"Cataclysm","kind":"ultimate","pick":"none","ultimate_charge":100,
+         "description":"Deal massive special damage to all enemies and inflict Bleed for 3 turns (80% chance).",
+         "effects":[{"type":"damage","damage_type":"ability_power","multiplier":3.0,"target":"all_enemies",
+           "on_hit":[{"type":"apply_status","status":"bleed","chance":0.8,"duration":3}]}]},
+        {"id":"gathering_dark","name":"Gathering Dark","kind":"unique",
+         "description":"Gains 25 ultimate charge when she attacks and 10 when she is damaged.",
+         "triggers":[
+           {"on":"attack","scope":"self","effects":[{"type":"modify_ultimate","amount":25,"target":"self"}]},
+           {"on":"receive_damage","scope":"self","once_per_turn":true,"effects":[{"type":"modify_ultimate","amount":10,"target":"self"}]}]}
+      ]
+    },
+    {
+      "id":"sable_dray","name":"Sable Dray","tags":["syndicate","human","attacker","assassin"],
+      "stats":{"health":35000,"protection":27000,"speed":255,"physical_damage":8200,"special_damage":1000,
+               "armor":260,"resistance":190,"phys_crit":0.42,"crit_damage":2.0,
+               "potency":0.30,"tenacity":0.15,"accuracy":0.15,"dodge":0.10,"crit_avoid":0.05},
+      "abilities":[
+        {"id":"razor_wire","name":"Razor Wire","kind":"basic","pick":"enemy",
+         "description":"Deal physical damage to target enemy.",
+         "effects":[{"type":"damage","damage_type":"attack_damage","multiplier":1.7}]},
+        {"id":"execution","name":"Execution","kind":"special","pick":"enemy","cooldown":4,
+         "description":"Deal heavy physical damage; deals bonus damage if the target is below 50% health.",
+         "effects":[
+           {"type":"damage","damage_type":"attack_damage","multiplier":3.2},
+           {"type":"damage","damage_type":"attack_damage","multiplier":1.6,"if_target_health_below":0.5}],
+         "ai":{"enemy_rules":["lowest_health_pct"]}},
+        {"id":"blood_scent","name":"Blood Scent","kind":"unique",
+         "description":"When an enemy is defeated, Sable gains Offense Up for 2 turns and 20% turn meter.",
+         "triggers":[{"on":"death","scope":"enemy",
+           "effects":[
+             {"type":"apply_status","status":"offense_up","duration":2,"target":"self"},
+             {"type":"modify_turn_meter","amount":0.2,"target":"self"}]}]}
+      ]
+    },
+    {
+      "id":"morrow","name":"Morrow","tags":["syndicate","mystic","debuffer","support"],
+      "stats":{"health":39000,"protection":36000,"speed":240,"physical_damage":1800,"special_damage":4400,
+               "armor":270,"resistance":350,"spec_crit":0.15,"crit_damage":1.5,
+               "potency":0.95,"tenacity":0.30,"crit_avoid":0.10},
+      "abilities":[
+        {"id":"mind_needle","name":"Mind Needle","kind":"basic","pick":"enemy",
+         "description":"Deal special damage to target enemy with a 40% chance to inflict Daze.",
+         "effects":[{"type":"damage","damage_type":"ability_power","multiplier":1.5,
+           "on_hit":[{"type":"apply_status","status":"daze","chance":0.4,"duration":2}]}]},
+        {"id":"silence","name":"Silence","kind":"special","pick":"enemy","cooldown":3,
+         "description":"Inflict Ability Block for 2 turns and reduce the target's turn meter by 30%.",
+         "effects":[
+           {"type":"apply_status","status":"ability_block","target":"selected","duration":2},
+           {"type":"modify_turn_meter","amount":-0.3,"target":"selected"}],
+         "ai":{"enemy_rules":["no_status:ability_block","highest_damage"]}},
+        {"id":"mass_hysteria","name":"Mass Hysteria","kind":"special","pick":"none","cooldown":4,
+         "description":"50% chance to Stun each enemy for 1 turn.",
+         "effects":[{"type":"apply_status","status":"stun","target":"all_enemies","chance":0.5,"duration":1}],
+         "ai":{"nodes":[{"type":"number_of_enemies_alive","group":"enemy","modifier":"greater_than","param":2}]}},
+        {"id":"whispers","name":"Whispers","kind":"unique",
+         "description":"When Morrow resists a debuff she gains Potency Up for 2 turns.",
+         "triggers":[{"on":"resisted","scope":"self",
+           "effects":[{"type":"apply_status","status":"potency_up","duration":2,"target":"self"}]}]}
+      ]
+    },
+    {
+      "id":"mother_hale","name":"Mother Hale","tags":["syndicate","human","healer","support"],
+      "stats":{"health":47000,"protection":43000,"speed":198,"physical_damage":2100,"special_damage":5100,
+               "armor":300,"resistance":420,"spec_crit":0.18,"crit_damage":1.5,
+               "potency":0.40,"tenacity":0.45,"health_steal":0.15,"crit_avoid":0.10},
+      "abilities":[
+        {"id":"siphon_touch","name":"Siphon Touch","kind":"basic","pick":"enemy",
+         "description":"Deal special damage to target enemy.",
+         "effects":[{"type":"damage","damage_type":"ability_power","multiplier":1.4}]},
+        {"id":"blood_tithe","name":"Blood Tithe","kind":"special","pick":"none","cooldown":3,
+         "description":"All allies gain Heal Over Time and Protection Over Time for 2 turns.",
+         "effects":[
+           {"type":"apply_status","status":"heal_over_time","target":"all_allies","duration":2},
+           {"type":"apply_status","status":"protection_over_time","target":"all_allies","duration":2}],
+         "ai":{"nodes":[{"type":"median_health","group":"ally","modifier":"less_than","param":80}]}},
+        {"id":"revenant_pact","name":"Revenant Pact","kind":"unique",
+         "description":"The first time Hale is defeated she revives with 50% health.",
+         "auras":[{"target":"self","status":"second_wind"}]}
+      ]
+    },
+    {
+      "id":"brute_gorrin","name":"Brute Gorrin","tags":["syndicate","human","attacker","bruiser"],
+      "stats":{"health":58000,"protection":52000,"speed":192,"physical_damage":5600,"special_damage":1600,
+               "armor":520,"resistance":280,"phys_crit":0.22,"crit_damage":1.7,
+               "potency":0.30,"tenacity":0.35,"health_steal":0.25,"crit_avoid":0.10},
+      "abilities":[
+        {"id":"cleaver","name":"Cleaver","kind":"basic","pick":"enemy",
+         "description":"Deal physical damage to target enemy.",
+         "effects":[{"type":"damage","damage_type":"attack_damage","multiplier":1.8}]},
+        {"id":"frenzy","name":"Frenzy","kind":"special","pick":"enemy","cooldown":3,
+         "description":"Deal heavy physical damage; Gorrin gains Health Steal Up and Offense Up for 2 turns.",
+         "effects":[
+           {"type":"damage","damage_type":"attack_damage","multiplier":2.4},
+           {"type":"apply_status","status":"health_steal_up","target":"self","duration":2},
+           {"type":"apply_status","status":"offense_up","target":"self","duration":2}]},
+        {"id":"brute_resilience","name":"Brute Resilience","kind":"unique",
+         "description":"When damaged, 30% chance to gain 10% turn meter (once per turn).",
+         "triggers":[{"on":"receive_damage","scope":"self","once_per_turn":true,"chance":0.3,
+           "effects":[{"type":"modify_turn_meter","amount":0.1,"target":"self"}]}]}
+      ]
+    }
+  ],
+
+  "stages": [
+    {"id":"placeholder_arena","name":"Placeholder Arena","prefab":"stages/placeholder_arena"}
+  ],
+
+  "teams": [
+    {"id":"concord_strike","name":"Concord Strike Force",
+     "units":["aria_vance","brask_orrin","elin_moss","kade_orlan","nyx_halloran"]},
+    {"id":"concord_control","name":"Concord Control",
+     "units":["aria_vance","tomas_rhee","elin_moss","kade_orlan","brask_orrin"]},
+    {"id":"syndicate_raiders","name":"Syndicate Raiders",
+     "units":["warden_krell","vexa_thorne","sable_dray","morrow","mother_hale"]},
+    {"id":"syndicate_bruisers","name":"Syndicate Bruisers",
+     "units":["warden_krell","brute_gorrin","sable_dray","morrow","vexa_thorne"]}
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  // ---- Formula constants (community-documented; see README "Calibration") ----
+
+  // mitigation = defense / (defense + level * level_constant). 7.5 is the community consensus.
+  "level_constant": 7.5,
+
+  // Random damage spread per hit (+/-). Community reports "typically 5%".
+  "variance": 0.05,
+
+  // Debuffs always have at least this chance to be resisted:
+  //   resist = clamp(max(tenacity - potency, resist_floor), resist_floor, 1)
+  "resist_floor": 0.15,
+
+  // ---- UNCERTAIN conventions: flip these when calibrating against the real game ----
+
+  // Does health steal count damage dealt to protection, or only to health?
+  "health_steal_includes_protection": true,
+
+  // false: an ability used this turn does NOT tick down at the end of that same turn,
+  //        so "cooldown 3" means 3 more of the owner's turns pass before it is usable again.
+  // true:  it ticks immediately, so "cooldown 3" is usable again on the 4th turn after use... minus one.
+  "cooldown_counts_use_turn": false,
+
+  // Damage beyond remaining protection carries over into health.
+  "damage_overflow_to_health": true,
+
+  // true:  a status that lands on a unit during its OWN turn (self-buff, or a debuff applied by a
+  //        counterattack) loses a turn of duration at the end of that same turn.
+  // false: it skips that first tick, so "for 1 turn" lasts through the owner's next turn.
+  "statuses_tick_on_apply_turn": true,
+
+  // ---- Engine limits ----
+  "tm_cap": 10.0,
+  "max_turns": 600,
+  "round_damage": true,
+  "max_pending_per_turn": 24,
+  "max_event_depth": 6
+}

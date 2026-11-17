@@ -1,0 +1,411 @@
+# GoHClone golden file v1
+# data-hash c3f3451455278f35
+# matrix: every ordered pair of teams x seeds 1..3, both sides controlled by the AI
+rng-raw seed=1 2469588189546311528 2516265689700432462 8323445853463659930
+rng-rand01 seed=1 0.13387664401253263 0.13640703636619722 0.45121490384453811 0.02102422841672702 0.35089811378291946
+rng-randInt6 seed=1 2 0 0 0 0 3 2 3
+rng-randInt10 seed=1 8 2 0 6 4 9 8 5
+rng-raw seed=42 13930160852258120406 11788048577503494824 13874630024467741450
+rng-rand01 seed=42 0.75515553295453897 0.63903139385469743 0.7521452007480266 0.13627268363243705 0.90326896642837828
+rng-randInt6 seed=42 0 2 4 0 5 2 4 0
+rng-randInt10 seed=42 6 4 0 2 1 8 6 4
+rng-raw seed=12345 6597103971274460346 7386862472818278521 12716877617435052285
+rng-rand01 seed=12345 0.35762972288842587 0.40044261704406114 0.68938331700276845 0.55973557064111557 0.57445129399171091
+rng-randInt6 seed=12345 0 5 3 0 2 5 2 2
+rng-randInt10 seed=12345 6 1 5 4 6 5 8 6
+battle concord_strike concord_control seed=1 winner=1 turns=95 events=597 trace=681120e84655eb27
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=75774 taken=86000 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=38850 taken=198200 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=33918 taken=137540 healed=124340
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=132202 taken=64000 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=48267 taken=132800 healed=0
+  unit Captain Aria Vance' alive=1 hp=45000 prot=14096 tm=0.9821 dealt=103104 taken=26904 healed=0
+  unit Tomas Rhee alive=1 hp=23935 prot=0 tm=0.6868 dealt=178930 taken=47065 healed=0
+  unit Dr. Elin Moss' alive=1 hp=32836 prot=0 tm=0.0000 dealt=45934 taken=84878 healed=77314
+  unit Kade Orlan' alive=1 hp=35644 prot=5003 tm=0.1803 dealt=252366 taken=62953 healed=0
+  unit Sgt. Brask Orrin' alive=1 hp=44789 prot=0 tm=0.4548 dealt=38206 taken=107211 healed=0
+battle concord_strike concord_control seed=2 winner=1 turns=122 events=756 trace=c45fb7f92e102886
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=45319 taken=131000 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=64902 taken=204200 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=61919 taken=230083 healed=202883
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=128025 taken=64000 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=45772 taken=74000 healed=0
+  unit Captain Aria Vance' alive=1 hp=45000 prot=2748 tm=0.0000 dealt=176383 taken=72138 healed=0
+  unit Tomas Rhee alive=1 hp=38000 prot=15200 tm=0.5862 dealt=262173 taken=51706 healed=0
+  unit Dr. Elin Moss' alive=1 hp=33585 prot=0 tm=0.5070 dealt=83674 taken=46415 healed=67792
+  unit Kade Orlan' alive=0 hp=0 prot=0 tm=0.0000 dealt=115824 taken=64000 healed=0
+  unit Sgt. Brask Orrin' alive=1 hp=51085 prot=19237 tm=0.7339 dealt=65229 taken=111678 healed=0
+battle concord_strike concord_control seed=3 winner=1 turns=251 events=1458 trace=ef86292be949e63f
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=178840 taken=181798 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=143870 taken=532799 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=126824 taken=322250 healed=601667
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=199628 taken=77320 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=19889 taken=88800 healed=0
+  unit Captain Aria Vance' alive=1 hp=44440 prot=0 tm=0.0000 dealt=499287 taken=137332 healed=0
+  unit Tomas Rhee alive=0 hp=0 prot=0 tm=0.0000 dealt=158465 taken=71000 healed=0
+  unit Dr. Elin Moss' alive=1 hp=42000 prot=13452 tm=0.8872 dealt=203579 taken=138125 healed=305702
+  unit Kade Orlan' alive=0 hp=0 prot=0 tm=0.0000 dealt=224977 taken=103600 healed=0
+  unit Sgt. Brask Orrin' alive=1 hp=60000 prot=43459 tm=0.2018 dealt=116659 taken=218994 healed=0
+battle concord_strike syndicate_raiders seed=1 winner=1 turns=94 events=616 trace=f9d5bf21cc2e024f
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=81992 taken=86000 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=41586 taken=182000 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=19950 taken=80000 healed=35010
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=232206 taken=99010 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=22515 taken=74000 healed=0
+  unit Warden Krell alive=1 hp=62000 prot=37200 tm=0.6869 dealt=43726 taken=77683 healed=0
+  unit Vexa Thorne alive=1 hp=35472 prot=8208 tm=0.2323 dealt=360387 taken=62320 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=65222 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=4901 taken=75000 healed=0
+  unit Mother Hale alive=1 hp=36229 prot=6370 tm=0.0000 dealt=46774 taken=121246 healed=117258
+battle concord_strike syndicate_raiders seed=2 winner=1 turns=100 events=615 trace=6a9978c8fd2e0cb3
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=69551 taken=86000 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=26267 taken=182000 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=24796 taken=80000 healed=72017
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=99604 taken=64000 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=62102 taken=146017 healed=0
+  unit Warden Krell alive=1 hp=54517 prot=0 tm=0.7414 dealt=38031 taken=71483 healed=0
+  unit Vexa Thorne alive=1 hp=38000 prot=362 tm=0.0000 dealt=376293 taken=29638 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=67308 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=23980 taken=75000 healed=0
+  unit Mother Hale alive=1 hp=45801 prot=0 tm=0.9483 dealt=52405 taken=44199 healed=0
+battle concord_strike syndicate_raiders seed=3 winner=1 turns=105 events=635 trace=884ac5447e268e09
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=99658 taken=152150 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=46385 taken=189200 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=24945 taken=130096 healed=134546
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=86212 taken=64000 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=35378 taken=88800 healed=0
+  unit Warden Krell alive=1 hp=55400 prot=0 tm=0.6869 dealt=41524 taken=70600 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=430535 taken=68000 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=55419 taken=62000 healed=0
+  unit Morrow alive=1 hp=19542 prot=0 tm=0.7576 dealt=35309 taken=55458 healed=0
+  unit Mother Hale alive=1 hp=47000 prot=6480 tm=0.0000 dealt=61459 taken=36520 healed=0
+battle concord_strike syndicate_bruisers seed=1 winner=0 turns=126 events=790 trace=dce6220497f521a6
+  unit Captain Aria Vance alive=1 hp=45000 prot=470 tm=0.0000 dealt=182872 taken=147359 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=60000 prot=28687 tm=0.7339 dealt=36314 taken=181393 healed=0
+  unit Dr. Elin Moss alive=1 hp=37428 prot=0 tm=0.8716 dealt=84778 taken=106717 healed=251374
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=140532 taken=77320 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=21791 taken=74000 healed=0
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=59629 taken=126000 healed=0
+  unit Brute Gorrin alive=0 hp=0 prot=0 tm=0.0000 dealt=144931 taken=135287 healed=25287
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=73653 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=4368 taken=75000 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=304208 taken=68000 healed=0
+battle concord_strike syndicate_bruisers seed=2 winner=1 turns=92 events=587 trace=777f8f110137fd2b
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=85633 taken=86000 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=23910 taken=182000 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=21276 taken=80000 healed=72214
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=125977 taken=64000 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=58644 taken=146214 healed=0
+  unit Warden Krell alive=1 hp=19967 prot=0 tm=0.2069 dealt=30905 taken=106033 healed=0
+  unit Brute Gorrin alive=1 hp=58000 prot=15146 tm=0.3310 dealt=78839 taken=36854 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=81118 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=7843 taken=75000 healed=0
+  unit Vexa Thorne alive=1 hp=32447 prot=0 tm=0.0000 dealt=359509 taken=35553 healed=0
+battle concord_strike syndicate_bruisers seed=3 winner=1 turns=98 events=631 trace=c9afae09ed1a37e5
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=60565 taken=102650 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=36448 taken=189200 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=24876 taken=137540 healed=136490
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=110840 taken=64000 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=53589 taken=132800 healed=0
+  unit Warden Krell alive=1 hp=62000 prot=4920 tm=0.9741 dealt=41096 taken=59080 healed=0
+  unit Brute Gorrin alive=1 hp=58000 prot=892 tm=0.8986 dealt=65114 taken=51108 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=58679 taken=62000 healed=0
+  unit Morrow alive=1 hp=18827 prot=0 tm=0.4483 dealt=25509 taken=56173 healed=0
+  unit Vexa Thorne alive=1 hp=10043 prot=0 tm=0.0000 dealt=435792 taken=57957 healed=0
+battle concord_control concord_strike seed=1 winner=1 turns=99 events=630 trace=e5f9fcb90adcc85e
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=79454 taken=127367 healed=0
+  unit Tomas Rhee alive=0 hp=0 prot=0 tm=0.0000 dealt=168815 taken=71000 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=30989 taken=80000 healed=41367
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=73685 taken=64000 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=60131 taken=182000 healed=0
+  unit Captain Aria Vance' alive=1 hp=16479 prot=0 tm=0.0000 dealt=161873 taken=69521 healed=0
+  unit Sgt. Brask Orrin' alive=1 hp=60000 prot=16087 tm=0.7938 dealt=25122 taken=90913 healed=0
+  unit Dr. Elin Moss' alive=0 hp=0 prot=0 tm=0.0000 dealt=23116 taken=117982 healed=37982
+  unit Kade Orlan' alive=0 hp=0 prot=0 tm=0.0000 dealt=243653 taken=64000 healed=0
+  unit Nyx Halloran alive=1 hp=3342 prot=0 tm=0.4524 dealt=70603 taken=70658 healed=0
+battle concord_control concord_strike seed=2 winner=0 turns=80 events=518 trace=b4bcd2dcaa7eb9a2
+  unit Captain Aria Vance alive=1 hp=14073 prot=0 tm=0.1883 dealt=88986 taken=71927 healed=0
+  unit Tomas Rhee alive=1 hp=31452 prot=0 tm=0.0000 dealt=155255 taken=39548 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=26285 taken=80000 healed=32017
+  unit Kade Orlan alive=1 hp=28587 prot=0 tm=0.4928 dealt=218093 taken=67430 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=58743 prot=0 tm=0.1382 dealt=33641 taken=93257 healed=0
+  unit Captain Aria Vance' alive=0 hp=0 prot=0 tm=0.0000 dealt=71453 taken=86000 healed=0
+  unit Sgt. Brask Orrin' alive=0 hp=0 prot=0 tm=0.0000 dealt=46766 taken=182000 healed=0
+  unit Dr. Elin Moss' alive=0 hp=0 prot=0 tm=0.0000 dealt=22691 taken=80000 healed=36260
+  unit Kade Orlan' alive=0 hp=0 prot=0 tm=0.0000 dealt=172121 taken=100260 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=39131 taken=74000 healed=0
+battle concord_control concord_strike seed=3 winner=1 turns=96 events=606 trace=ddf0abc8e33ecc35
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=114627 taken=139814 healed=0
+  unit Tomas Rhee alive=0 hp=0 prot=0 tm=0.0000 dealt=97723 taken=71000 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=33524 taken=128069 healed=109383
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=73539 taken=64000 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=40046 taken=174200 healed=0
+  unit Captain Aria Vance' alive=1 hp=38199 prot=0 tm=0.6962 dealt=111657 taken=47801 healed=0
+  unit Sgt. Brask Orrin' alive=1 hp=60000 prot=14691 tm=0.6876 dealt=36420 taken=92309 healed=0
+  unit Dr. Elin Moss' alive=0 hp=0 prot=0 tm=0.0000 dealt=40238 taken=80000 healed=83600
+  unit Kade Orlan' alive=1 hp=33947 prot=0 tm=0.0000 dealt=333824 taken=69653 healed=0
+  unit Nyx Halloran alive=1 hp=32304 prot=16000 tm=0.5953 dealt=54944 taken=69696 healed=0
+battle concord_control syndicate_raiders seed=1 winner=0 turns=150 events=909 trace=d04a784571e3b250
+  unit Captain Aria Vance alive=1 hp=45000 prot=14828 tm=0.0000 dealt=277672 taken=114769 healed=0
+  unit Tomas Rhee alive=0 hp=0 prot=0 tm=0.0000 dealt=51408 taken=71000 healed=0
+  unit Dr. Elin Moss alive=1 hp=34528 prot=10500 tm=0.1715 dealt=93023 taken=164253 healed=233178
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=101628 taken=64000 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=50382 prot=33536 tm=1.0858 dealt=63317 taken=151482 healed=0
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=84072 taken=217218 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=310256 taken=68000 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=83808 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=8820 taken=75000 healed=0
+  unit Mother Hale alive=0 hp=0 prot=0 tm=0.0000 dealt=78548 taken=164830 healed=120578
+battle concord_control syndicate_raiders seed=2 winner=0 turns=85 events=559 trace=7a38907bebdb8f8d
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=69886 taken=86000 healed=0
+  unit Tomas Rhee alive=0 hp=0 prot=0 tm=0.0000 dealt=129965 taken=71000 healed=0
+  unit Dr. Elin Moss alive=1 hp=32088 prot=13231 tm=0.0068 dealt=37890 taken=76681 healed=81600
+  unit Kade Orlan alive=1 hp=30308 prot=7577 tm=0.0000 dealt=246198 taken=65715 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=32753 prot=0 tm=0.9799 dealt=29165 taken=119247 healed=0
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=33902 taken=141500 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=191046 taken=68000 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=143644 taken=79500 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=9307 taken=75000 healed=0
+  unit Mother Hale alive=0 hp=0 prot=0 tm=0.0000 dealt=40744 taken=149104 healed=46634
+battle concord_control syndicate_raiders seed=3 winner=0 turns=95 events=608 trace=57350139922dd8a2
+  unit Captain Aria Vance alive=1 hp=45000 prot=130 tm=0.0000 dealt=120051 taken=56098 healed=0
+  unit Tomas Rhee alive=0 hp=0 prot=0 tm=0.0000 dealt=45810 taken=71000 healed=0
+  unit Dr. Elin Moss alive=1 hp=38315 prot=20056 tm=0.6616 dealt=32881 taken=79169 healed=150084
+  unit Kade Orlan alive=1 hp=36000 prot=14400 tm=0.9573 dealt=284900 taken=94216 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=60000 prot=31328 tm=0.7339 dealt=25644 taken=75672 healed=0
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=52698 taken=156324 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=229122 taken=68000 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=39092 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=18234 taken=75000 healed=0
+  unit Mother Hale alive=0 hp=0 prot=0 tm=0.0000 dealt=37009 taken=147962 healed=42816
+battle concord_control syndicate_bruisers seed=1 winner=1 turns=127 events=816 trace=fef85e2d6f525636
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=99079 taken=86000 healed=0
+  unit Tomas Rhee alive=0 hp=0 prot=0 tm=0.0000 dealt=69403 taken=71000 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=11271 taken=80000 healed=39600
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=175058 taken=103600 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=85033 taken=242000 healed=0
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=59172 taken=126000 healed=0
+  unit Brute Gorrin alive=1 hp=48783 prot=0 tm=0.0000 dealt=206978 taken=108844 healed=47627
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=46603 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=9465 taken=75000 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=260382 taken=68000 healed=0
+battle concord_control syndicate_bruisers seed=2 winner=0 turns=101 events=654 trace=fb09c4fc1bc5181d
+  unit Captain Aria Vance alive=1 hp=27008 prot=5352 tm=0.9322 dealt=104774 taken=81540 healed=0
+  unit Tomas Rhee alive=1 hp=35287 prot=21235 tm=0.4314 dealt=196956 taken=120838 healed=0
+  unit Dr. Elin Moss alive=1 hp=36080 prot=23698 tm=0.0000 dealt=35617 taken=93302 healed=214740
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=84747 taken=64000 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=24330 prot=14557 tm=0.6669 dealt=38166 taken=166513 healed=0
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=46185 taken=126000 healed=0
+  unit Brute Gorrin alive=0 hp=0 prot=0 tm=0.0000 dealt=91814 taken=129260 healed=19260
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=108815 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=9797 taken=75000 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=269582 taken=68000 healed=0
+battle concord_control syndicate_bruisers seed=3 winner=0 turns=85 events=569 trace=90c1fe8bde31cddf
+  unit Captain Aria Vance alive=1 hp=21720 prot=0 tm=0.0000 dealt=82428 taken=80930 healed=0
+  unit Tomas Rhee alive=1 hp=18172 prot=0 tm=0.3642 dealt=101237 taken=108688 healed=0
+  unit Dr. Elin Moss alive=1 hp=6990 prot=0 tm=0.0669 dealt=18519 taken=88550 healed=133870
+  unit Kade Orlan alive=1 hp=28405 prot=7516 tm=0.4736 dealt=210714 taken=80999 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=60000 prot=2541 tm=0.7339 dealt=37787 taken=89459 healed=0
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=40376 taken=126000 healed=0
+  unit Brute Gorrin alive=0 hp=0 prot=0 tm=0.0000 dealt=67158 taken=119685 healed=9685
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=44216 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=16452 taken=75000 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=280424 taken=68000 healed=0
+battle syndicate_raiders concord_strike seed=1 winner=0 turns=94 events=616 trace=789e6c39c2238818
+  unit Warden Krell alive=1 hp=62000 prot=37200 tm=0.6869 dealt=43726 taken=77683 healed=0
+  unit Vexa Thorne alive=1 hp=35472 prot=8208 tm=0.2323 dealt=360387 taken=62320 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=65222 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=4901 taken=75000 healed=0
+  unit Mother Hale alive=1 hp=36229 prot=6370 tm=0.0000 dealt=46774 taken=121246 healed=117258
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=81992 taken=86000 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=41586 taken=182000 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=19950 taken=80000 healed=35010
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=232206 taken=99010 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=22515 taken=74000 healed=0
+battle syndicate_raiders concord_strike seed=2 winner=0 turns=100 events=615 trace=e7262474ed792d6d
+  unit Warden Krell alive=1 hp=54517 prot=0 tm=0.7414 dealt=38031 taken=71483 healed=0
+  unit Vexa Thorne alive=1 hp=38000 prot=362 tm=0.0000 dealt=376293 taken=29638 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=67308 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=23980 taken=75000 healed=0
+  unit Mother Hale alive=1 hp=45801 prot=0 tm=0.9483 dealt=52405 taken=44199 healed=0
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=69551 taken=86000 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=26267 taken=182000 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=24796 taken=80000 healed=72017
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=99604 taken=64000 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=62102 taken=146017 healed=0
+battle syndicate_raiders concord_strike seed=3 winner=0 turns=105 events=635 trace=feec5da21a63bc01
+  unit Warden Krell alive=1 hp=55400 prot=0 tm=0.6869 dealt=41524 taken=70600 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=430535 taken=68000 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=55419 taken=62000 healed=0
+  unit Morrow alive=1 hp=19542 prot=0 tm=0.7576 dealt=35309 taken=55458 healed=0
+  unit Mother Hale alive=1 hp=47000 prot=6480 tm=0.0000 dealt=61459 taken=36520 healed=0
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=99658 taken=152150 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=46385 taken=189200 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=24945 taken=130096 healed=134546
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=86212 taken=64000 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=35378 taken=88800 healed=0
+battle syndicate_raiders concord_control seed=1 winner=1 turns=150 events=909 trace=e7dfacc2fa02cf8f
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=84072 taken=217218 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=310256 taken=68000 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=83808 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=8820 taken=75000 healed=0
+  unit Mother Hale alive=0 hp=0 prot=0 tm=0.0000 dealt=78548 taken=164830 healed=120578
+  unit Captain Aria Vance alive=1 hp=45000 prot=14828 tm=0.0000 dealt=277672 taken=114769 healed=0
+  unit Tomas Rhee alive=0 hp=0 prot=0 tm=0.0000 dealt=51408 taken=71000 healed=0
+  unit Dr. Elin Moss alive=1 hp=34528 prot=10500 tm=0.1715 dealt=93023 taken=164253 healed=233178
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=101628 taken=64000 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=50382 prot=33536 tm=1.0858 dealt=63317 taken=151482 healed=0
+battle syndicate_raiders concord_control seed=2 winner=1 turns=85 events=559 trace=e9d7b9c67b442128
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=33902 taken=141500 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=191046 taken=68000 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=143644 taken=79500 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=9307 taken=75000 healed=0
+  unit Mother Hale alive=0 hp=0 prot=0 tm=0.0000 dealt=40744 taken=149104 healed=46634
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=69886 taken=86000 healed=0
+  unit Tomas Rhee alive=0 hp=0 prot=0 tm=0.0000 dealt=129965 taken=71000 healed=0
+  unit Dr. Elin Moss alive=1 hp=32088 prot=13231 tm=0.0068 dealt=37890 taken=76681 healed=81600
+  unit Kade Orlan alive=1 hp=30308 prot=7577 tm=0.0000 dealt=246198 taken=65715 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=32753 prot=0 tm=0.9799 dealt=29165 taken=119247 healed=0
+battle syndicate_raiders concord_control seed=3 winner=1 turns=95 events=608 trace=b3073d94e6973244
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=52698 taken=156324 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=229122 taken=68000 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=39092 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=18234 taken=75000 healed=0
+  unit Mother Hale alive=0 hp=0 prot=0 tm=0.0000 dealt=37009 taken=147962 healed=42816
+  unit Captain Aria Vance alive=1 hp=45000 prot=130 tm=0.0000 dealt=120051 taken=56098 healed=0
+  unit Tomas Rhee alive=0 hp=0 prot=0 tm=0.0000 dealt=45810 taken=71000 healed=0
+  unit Dr. Elin Moss alive=1 hp=38315 prot=20056 tm=0.6616 dealt=32881 taken=79169 healed=150084
+  unit Kade Orlan alive=1 hp=36000 prot=14400 tm=0.9573 dealt=284900 taken=94216 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=60000 prot=31328 tm=0.7339 dealt=25644 taken=75672 healed=0
+battle syndicate_raiders syndicate_bruisers seed=1 winner=0 turns=70 events=413 trace=88b66d5b1703a372
+  unit Warden Krell alive=1 hp=62000 prot=31688 tm=0.3730 dealt=13442 taken=32312 healed=0
+  unit Vexa Thorne alive=1 hp=34153 prot=0 tm=0.6098 dealt=213590 taken=33847 healed=0
+  unit Sable Dray alive=1 hp=26364 prot=0 tm=0.2000 dealt=169307 taken=35636 healed=0
+  unit Morrow alive=1 hp=39000 prot=11377 tm=0.9412 dealt=13067 taken=24623 healed=0
+  unit Mother Hale alive=1 hp=43227 prot=0 tm=0.2015 dealt=38083 taken=49943 healed=3170
+  unit Warden Krell' alive=0 hp=0 prot=0 tm=0.0000 dealt=22900 taken=126000 healed=0
+  unit Brute Gorrin alive=0 hp=0 prot=0 tm=0.0000 dealt=41734 taken=116489 healed=6489
+  unit Sable Dray' alive=0 hp=0 prot=0 tm=0.0000 dealt=32067 taken=62000 healed=0
+  unit Morrow' alive=0 hp=0 prot=0 tm=0.0000 dealt=5005 taken=75000 healed=0
+  unit Vexa Thorne' alive=0 hp=0 prot=0 tm=0.0000 dealt=74655 taken=68000 healed=0
+battle syndicate_raiders syndicate_bruisers seed=2 winner=1 turns=94 events=572 trace=62d1367194d218f1
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=18779 taken=126000 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=166683 taken=68000 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=35501 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=9424 taken=94500 healed=0
+  unit Mother Hale alive=0 hp=0 prot=0 tm=0.0000 dealt=25448 taken=143165 healed=27195
+  unit Warden Krell' alive=1 hp=35442 prot=0 tm=0.8603 dealt=22870 taken=90558 healed=0
+  unit Brute Gorrin alive=1 hp=58000 prot=0 tm=0.7132 dealt=50681 taken=53261 healed=1261
+  unit Sable Dray' alive=1 hp=27999 prot=0 tm=0.3517 dealt=161053 taken=34001 healed=0
+  unit Morrow' alive=1 hp=37149 prot=0 tm=0.2995 dealt=22594 taken=37851 healed=0
+  unit Vexa Thorne' alive=1 hp=27836 prot=0 tm=0.0000 dealt=236467 taken=40164 healed=0
+battle syndicate_raiders syndicate_bruisers seed=3 winner=1 turns=120 events=754 trace=96d1664b9ad33ab0
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=32863 taken=175600 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=229333 taken=77500 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=42638 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=20254 taken=94500 healed=0
+  unit Mother Hale alive=0 hp=0 prot=0 tm=0.0000 dealt=43939 taken=156886 healed=100016
+  unit Warden Krell' alive=1 hp=48191 prot=0 tm=0.7650 dealt=42184 taken=77809 healed=0
+  unit Brute Gorrin alive=1 hp=36174 prot=0 tm=0.2094 dealt=100452 taken=99017 healed=25191
+  unit Sable Dray' alive=0 hp=0 prot=0 tm=0.0000 dealt=79452 taken=62000 healed=0
+  unit Morrow' alive=0 hp=0 prot=0 tm=0.0000 dealt=17855 taken=75000 healed=0
+  unit Vexa Thorne' alive=1 hp=12799 prot=0 tm=0.0000 dealt=326543 taken=55201 healed=0
+battle syndicate_bruisers concord_strike seed=1 winner=1 turns=126 events=790 trace=c23789e5a458cc41
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=59629 taken=126000 healed=0
+  unit Brute Gorrin alive=0 hp=0 prot=0 tm=0.0000 dealt=144931 taken=135287 healed=25287
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=73653 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=4368 taken=75000 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=304208 taken=68000 healed=0
+  unit Captain Aria Vance alive=1 hp=45000 prot=470 tm=0.0000 dealt=182872 taken=147359 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=60000 prot=28687 tm=0.7339 dealt=36314 taken=181393 healed=0
+  unit Dr. Elin Moss alive=1 hp=37428 prot=0 tm=0.8716 dealt=84778 taken=106717 healed=251374
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=140532 taken=77320 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=21791 taken=74000 healed=0
+battle syndicate_bruisers concord_strike seed=2 winner=0 turns=92 events=587 trace=626d5bbeb7642711
+  unit Warden Krell alive=1 hp=19967 prot=0 tm=0.2069 dealt=30905 taken=106033 healed=0
+  unit Brute Gorrin alive=1 hp=58000 prot=15146 tm=0.3310 dealt=78839 taken=36854 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=81118 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=7843 taken=75000 healed=0
+  unit Vexa Thorne alive=1 hp=32447 prot=0 tm=0.0000 dealt=359509 taken=35553 healed=0
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=85633 taken=86000 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=23910 taken=182000 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=21276 taken=80000 healed=72214
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=125977 taken=64000 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=58644 taken=146214 healed=0
+battle syndicate_bruisers concord_strike seed=3 winner=0 turns=98 events=631 trace=bb04e20f2f591bc2
+  unit Warden Krell alive=1 hp=62000 prot=4920 tm=0.9741 dealt=41096 taken=59080 healed=0
+  unit Brute Gorrin alive=1 hp=58000 prot=892 tm=0.8986 dealt=65114 taken=51108 healed=0
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=58679 taken=62000 healed=0
+  unit Morrow alive=1 hp=18827 prot=0 tm=0.4483 dealt=25509 taken=56173 healed=0
+  unit Vexa Thorne alive=1 hp=10043 prot=0 tm=0.0000 dealt=435792 taken=57957 healed=0
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=60565 taken=102650 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=36448 taken=189200 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=24876 taken=137540 healed=136490
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=110840 taken=64000 healed=0
+  unit Nyx Halloran alive=0 hp=0 prot=0 tm=0.0000 dealt=53589 taken=132800 healed=0
+battle syndicate_bruisers concord_control seed=1 winner=0 turns=127 events=816 trace=fa0261e8e5ca2a86
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=59172 taken=126000 healed=0
+  unit Brute Gorrin alive=1 hp=48783 prot=0 tm=0.0000 dealt=206978 taken=108844 healed=47627
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=46603 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=9465 taken=75000 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=260382 taken=68000 healed=0
+  unit Captain Aria Vance alive=0 hp=0 prot=0 tm=0.0000 dealt=99079 taken=86000 healed=0
+  unit Tomas Rhee alive=0 hp=0 prot=0 tm=0.0000 dealt=69403 taken=71000 healed=0
+  unit Dr. Elin Moss alive=0 hp=0 prot=0 tm=0.0000 dealt=11271 taken=80000 healed=39600
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=175058 taken=103600 healed=0
+  unit Sgt. Brask Orrin alive=0 hp=0 prot=0 tm=0.0000 dealt=85033 taken=242000 healed=0
+battle syndicate_bruisers concord_control seed=2 winner=1 turns=101 events=654 trace=e738b7330b7a54ff
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=46185 taken=126000 healed=0
+  unit Brute Gorrin alive=0 hp=0 prot=0 tm=0.0000 dealt=91814 taken=129260 healed=19260
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=108815 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=9797 taken=75000 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=269582 taken=68000 healed=0
+  unit Captain Aria Vance alive=1 hp=27008 prot=5352 tm=0.9322 dealt=104774 taken=81540 healed=0
+  unit Tomas Rhee alive=1 hp=35287 prot=21235 tm=0.4314 dealt=196956 taken=120838 healed=0
+  unit Dr. Elin Moss alive=1 hp=36080 prot=23698 tm=0.0000 dealt=35617 taken=93302 healed=214740
+  unit Kade Orlan alive=0 hp=0 prot=0 tm=0.0000 dealt=84747 taken=64000 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=24330 prot=14557 tm=0.6669 dealt=38166 taken=166513 healed=0
+battle syndicate_bruisers concord_control seed=3 winner=1 turns=85 events=569 trace=90aca031c81a9b38
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=40376 taken=126000 healed=0
+  unit Brute Gorrin alive=0 hp=0 prot=0 tm=0.0000 dealt=67158 taken=119685 healed=9685
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=44216 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=16452 taken=75000 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=280424 taken=68000 healed=0
+  unit Captain Aria Vance alive=1 hp=21720 prot=0 tm=0.0000 dealt=82428 taken=80930 healed=0
+  unit Tomas Rhee alive=1 hp=18172 prot=0 tm=0.3642 dealt=101237 taken=108688 healed=0
+  unit Dr. Elin Moss alive=1 hp=6990 prot=0 tm=0.0669 dealt=18519 taken=88550 healed=133870
+  unit Kade Orlan alive=1 hp=28405 prot=7516 tm=0.4736 dealt=210714 taken=80999 healed=0
+  unit Sgt. Brask Orrin alive=1 hp=60000 prot=2541 tm=0.7339 dealt=37787 taken=89459 healed=0
+battle syndicate_bruisers syndicate_raiders seed=1 winner=1 turns=83 events=575 trace=a8a83fec85158edf
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=36630 taken=126000 healed=0
+  unit Brute Gorrin alive=0 hp=0 prot=0 tm=0.0000 dealt=56681 taken=121023 healed=11023
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=35629 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=8723 taken=75000 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=177411 taken=68000 healed=0
+  unit Warden Krell' alive=1 hp=62000 prot=31871 tm=0.1860 dealt=16547 taken=60029 healed=0
+  unit Vexa Thorne' alive=1 hp=34094 prot=13179 tm=0.0000 dealt=337438 taken=58727 healed=0
+  unit Sable Dray' alive=0 hp=0 prot=0 tm=0.0000 dealt=46770 taken=62000 healed=0
+  unit Morrow' alive=1 hp=29570 prot=14536 tm=0.3721 dealt=26820 taken=69894 healed=0
+  unit Mother Hale alive=1 hp=43616 prot=7050 tm=0.1951 dealt=24448 taken=64424 healed=129990
+battle syndicate_bruisers syndicate_raiders seed=2 winner=1 turns=105 events=658 trace=162f5ce2669317f2
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=29621 taken=126000 healed=0
+  unit Brute Gorrin alive=0 hp=0 prot=0 tm=0.0000 dealt=58485 taken=125631 healed=15631
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=47109 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=11270 taken=75000 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=198475 taken=68000 healed=0
+  unit Warden Krell' alive=1 hp=19472 prot=6743 tm=0.5159 dealt=39218 taken=130785 healed=0
+  unit Vexa Thorne' alive=1 hp=28880 prot=1222 tm=0.0000 dealt=298688 taken=56898 healed=0
+  unit Sable Dray' alive=0 hp=0 prot=0 tm=0.0000 dealt=50644 taken=62000 healed=0
+  unit Morrow' alive=1 hp=39000 prot=5321 tm=0.6806 dealt=24838 taken=43150 healed=0
+  unit Mother Hale alive=1 hp=44923 prot=0 tm=0.7926 dealt=43243 taken=52127 healed=69521
+battle syndicate_bruisers syndicate_raiders seed=3 winner=1 turns=98 events=651 trace=f73e76a6fc044ec2
+  unit Warden Krell alive=0 hp=0 prot=0 tm=0.0000 dealt=15344 taken=126000 healed=0
+  unit Brute Gorrin alive=0 hp=0 prot=0 tm=0.0000 dealt=61351 taken=122335 healed=12335
+  unit Sable Dray alive=0 hp=0 prot=0 tm=0.0000 dealt=66800 taken=62000 healed=0
+  unit Morrow alive=0 hp=0 prot=0 tm=0.0000 dealt=16768 taken=75000 healed=0
+  unit Vexa Thorne alive=0 hp=0 prot=0 tm=0.0000 dealt=177055 taken=68000 healed=0
+  unit Warden Krell' alive=1 hp=62000 prot=32311 tm=0.7011 dealt=26014 taken=59589 healed=0
+  unit Vexa Thorne' alive=1 hp=19086 prot=20900 tm=0.5915 dealt=226219 taken=66014 healed=0
+  unit Sable Dray' alive=1 hp=17573 prot=14335 tm=0.2000 dealt=152167 taken=65092 healed=0
+  unit Morrow' alive=1 hp=26473 prot=11700 tm=0.0801 dealt=22568 taken=75827 healed=0
+  unit Mother Hale alive=1 hp=35556 prot=8796 tm=0.6999 dealt=26367 taken=70796 healed=165048

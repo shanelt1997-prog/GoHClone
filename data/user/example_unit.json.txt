@@ -1,0 +1,54 @@
+{
+  // A complete example of a unit entered from in-game numbers. Copy this file to my_units.json to use it.
+  // Everything here is invented; it only shows the format.
+
+  "units": [
+    {
+      "id": "example_striker",
+      "name": "Example Striker",
+      "tags": ["example", "attacker"],
+      "level": 85,
+
+      "stats": {
+        // raw numbers, as on the stat screen
+        "health": 41250, "protection": 36800, "speed": 241,
+        "physical_damage": 9120, "special_damage": 2310,
+        // percentages: "_pct" means "type the number the game shows"
+        "armor_pct": 41.27, "resistance_pct": 28.5,
+        "phys_crit_pct": 62.5, "crit_damage_pct": 187.5,
+        "potency_pct": 105.2, "tenacity_pct": 48.1,
+        "accuracy_pct": 12.0, "crit_avoid_pct": 18.0
+      },
+
+      "abilities": [
+        // BASIC: exactly one per unit. Damage with a 50% chance to inflict Bleed on the target that was hit.
+        {"id": "ex_basic", "name": "Basic Strike", "kind": "basic", "pick": "enemy",
+         "description": "Deal physical damage; 50% chance to inflict Bleed.",
+         "effects": [
+           {"type": "damage", "damage_type": "attack_damage", "multiplier": 1.65,
+            "on_hit": [{"type": "apply_status", "status": "bleed", "chance": 0.5, "duration": 2}]}]},
+
+        // SPECIAL with a cooldown: hits every enemy, 80% chance of Defense Down on each, and the user gains 25% turn meter.
+        {"id": "ex_special", "name": "Sweeping Blow", "kind": "special", "pick": "none", "cooldown": 3,
+         "description": "Damage all enemies, may inflict Defense Down, gain 25% turn meter.",
+         "effects": [
+           {"type": "damage", "damage_type": "attack_damage", "multiplier": 1.9, "target": "all_enemies",
+            "on_hit": [{"type": "apply_status", "status": "defense_down", "chance": 0.8, "duration": 2}]},
+           {"type": "modify_turn_meter", "amount": 0.25, "target": "self"}],
+         // optional: only let the auto-battle AI use it when at least 3 enemies are alive
+         "ai": {"nodes": [{"type": "number_of_enemies_alive", "group": "enemy", "modifier": "greater_than", "param": 2}]}},
+
+        // UNIQUE (passive): a trigger. Defeating an enemy grants a bonus turn, at most once per turn.
+        {"id": "ex_unique", "name": "Momentum", "kind": "unique",
+         "description": "Defeating an enemy grants a bonus turn.",
+         "triggers": [{"on": "kill", "scope": "self", "once_per_turn": true,
+                       "effects": [{"type": "bonus_move", "target": "self"}]}]}
+      ]
+    }
+  ],
+
+  "teams": [
+    {"id": "example_team", "name": "Example Team",
+     "units": ["example_striker", "aria_vance", "brask_orrin", "elin_moss", "nyx_halloran"]}
+  ]
+}
