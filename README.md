@@ -253,3 +253,58 @@ anything graphical.
 * Critical avoidance — https://forums.ea.com/discussions/swgoh-strategy-and-tips-en/what-exactly-does-critical-avoidance-do/3691888
 * Order of events in a turn — https://forums.ea.com/discussions/swgoh-technical-issues-en/the-big-problem-with-buffs--debuffs-in-the-game/10889886
 * Duration quirk report — https://forums.galaxy-of-heroes.starwars.ea.com/discussion/7403/bug-counter-applied-debuffs-lose-a-turn-of-duration
+
+
+---
+
+## Windows desktop application
+
+The solution includes a separate **GoHCloneDesktop** native Windows application.
+Open GoHClone.sln in Visual Studio 2022 and select **GoHCloneDesktop** as the
+startup project, then choose **x64 / Debug** and press F5.
+
+The application has a standard Windows menu bar:
+
+* **File** — choose the data folder, reload data, or exit.
+* **Roster** — overview, add/edit unit, and browse the status library.
+* **Battle** — run AI-vs-AI simulations and validate loaded data.
+* **Help** — application information.
+
+### Adding a unit
+
+Choose **Roster → Add new unit**. Enter the unit name, level, tags and stats,
+then build its kit in the ability editor. Add one Basic ability and as many Special,
+Ultimate, Leader and Unique abilities as required. Each active ability can contain
+multiple effects. The effect builder supports damage, healing, status application
+and removal, turn-meter changes, cooldown and ultimate changes, dispels, revives,
+bonus turns, assists, counters, follow-up ability uses and instant defeat. Unique
+abilities can be configured with an event trigger. Leader abilities can grant a
+selected status aura to all allies.
+
+Choose **Save and validate unit**. The app writes a JSON file to data/user/,
+reloads the complete data set through the existing game loader, and removes the
+new file again if validation fails. It requires exactly one Basic ability, plus
+valid Health and Speed values.
+
+For status effects, the duration field can be left blank to use the status
+definition's default duration, or set to -1 for permanent.
+
+### Status library and simulator
+
+The status browser reads all status definitions loaded by the engine and allows
+filtering by buff, debuff or neutral and searching by name, ID or description.
+The detail panel includes the status description, duration, stacks, dispellability,
+flags, stat modifiers, blocks, exclusions and passive reaction count.
+
+The simulator accepts either existing team IDs or comma-separated unit IDs,
+supports repeat counts and a reproducible seed, and reports win rates, average
+turns and the first battle's text trace.
+
+The application is a front end for the existing simulation engine; it does not
+add mechanics that the engine itself does not implement. Character-specific
+passive logic, unusual nested effects and other engine gaps may still require
+extending the JSON schema or C++ engine. The original console application remains
+in the solution as a separate project.
+
+A Windows GitHub Actions workflow builds the full x64 solution and uploads the
+desktop executable and its copied data folder as an artifact.
