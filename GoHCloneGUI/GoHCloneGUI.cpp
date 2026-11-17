@@ -716,8 +716,8 @@ void syncComlink() {
             std::string version=metadata.str("latestGamedataVersion");
             if(version.empty())if(const auto* p=metadata.find("data"))version=p->str("latestGamedataVersion");
             if(version.empty())throw std::runtime_error("Comlink metadata did not contain latestGamedataVersion.");
-            const std::string request2="{\"payload\":{\"version\":\""+escapeJson(version)+"\",\"includePveUnits\":false,\"requestSegment\":2},\"enums\":false}";
-            const std::string request3="{\"payload\":{\"version\":\""+escapeJson(version)+"\",\"includePveUnits\":false,\"requestSegment\":3},\"enums\":false}";
+            const std::string request2="{\"payload\":{\"version\":\""+escapeJson(version)+"\",\"includePveUnits\":false,\"items\":\"Segment2\"},\"enums\":false}";
+            const std::string request3="{\"payload\":{\"version\":\""+escapeJson(version)+"\",\"includePveUnits\":false,\"items\":\"Segment3\"},\"enums\":false}";
             const std::string segment2=httpRequest(base+L"/data",L"POST",request2);
             const std::string segment3=httpRequest(base+L"/data",L"POST",request3);
             json::Value parsed2=json::parse(segment2),parsed3=json::parse(segment3);
