@@ -465,8 +465,16 @@ void addEffect() {
     }
     if(type=="heal"&&aux<0){MessageBoxW(gMain,L"Protection healing multiplier cannot be negative.",L"Invalid healing value",MB_ICONWARNING);return;}
     if(amount>1000){MessageBoxW(gMain,L"Amount or stack count is too large.",L"Invalid amount",MB_ICONWARNING);return;}
+    if((type=="apply_status"||type=="remove_status"||type=="dispel"||type=="damage")&&std::floor(amount)!=amount){
+        MessageBoxW(gMain,L"Stacks, dispel count and hit count must be whole numbers.",L"Invalid count",MB_ICONWARNING);return;
+    }
+    if(type=="revive"&&amount>1){MessageBoxW(gMain,L"Revive health fraction must be between 0 and 1 (for example, 0.3 for 30%).",L"Invalid revive amount",MB_ICONWARNING);return;}
+    if(type=="use_ability"){
+        const std::string ref=trim(toUtf8(getText(gEffectAbility)));
+        if(ref.empty()||ref=="*"){MessageBoxW(gMain,L"Enter the ability ID to use, or type basic.",L"Ability reference required",MB_ICONWARNING);return;}
+    }
     std::ostringstream j;j<<"{\"type\":\""<<type<<"\",\"target\":\""<<target<<"\",\"chance\":"<<fmt(chance/100.0);
-    if(type=="damage")j<<",\"damage_type\":\""<<effectDamageKey()<<"\",\"multiplier\":"<<fmt(value);
+    if(type=="damage"){j<<",\"damage_type\":\""<<effectDamageKey()<<"\",\"multiplier\":"<<fmt(value);if(amount>0)j<<",\"hits\":"<<static_cast<int>(amount);}
     else if(type=="heal")j<<",\"multiplier\":"<<fmt(value)<<",\"protection_multiplier\":"<<fmt(aux);
     else if(type=="apply_status"){
         if(status.empty()){MessageBoxW(gMain,L"Choose a status for this effect.",L"Status required",MB_ICONWARNING);return;}
