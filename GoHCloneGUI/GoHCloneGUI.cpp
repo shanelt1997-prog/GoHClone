@@ -270,6 +270,8 @@ void updateHome() {
     setText(gHomeData,fromUtf8(gDataDir.string()));
 }
 
+void refreshStatusList();
+void updateStatusDetail();
 void createHome();
 void createUnitEditor();
 void createStatuses();
