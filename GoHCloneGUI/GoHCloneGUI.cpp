@@ -456,7 +456,7 @@ void addEffect() {
         if(status.empty()){MessageBoxW(gMain,L"Choose a status for this effect.",L"Status required",MB_ICONWARNING);return;}
         j<<",\"status\":\""<<escapeJson(status)<<"\",\"duration\":"<<static_cast<int>(duration)<<",\"stacks\":"<<std::max(1,static_cast<int>(amount));
     } else if(type=="modify_turn_meter"||type=="modify_ultimate")j<<",\"amount\":"<<fmt(value);
-    else if(type=="modify_cooldown")j<<",\"amount\":"<<fmt(value)<<",\"ability\":\""<<escapeJson(toUtf8(getText(gEffectAbility)))<<"\";
+    else if(type=="modify_cooldown") j << ",\"amount\":" << fmt(value) << ",\"ability\":\"" << escapeJson(toUtf8(getText(gEffectAbility))) << "\"";
     else if(type=="dispel"){
         std::string dispel=comboText(gEffectDispel);std::transform(dispel.begin(),dispel.end(),dispel.begin(),[](unsigned char c){return static_cast<char>(std::tolower(c));});
         j<<",\"dispel\":\""<<dispel<<"\",\"count\":"<<static_cast<int>(amount);
