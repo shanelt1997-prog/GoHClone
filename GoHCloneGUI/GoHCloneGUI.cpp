@@ -706,6 +706,7 @@ void syncComlink() {
     if(MessageBoxW(gMain,(L"Download the latest SWGOH character and ability game-data segment from:\r\n\r\n"+base+
        L"\r\n\r\nComlink must already be running. Continue?").c_str(),L"SWGOH Comlink",MB_ICONQUESTION|MB_YESNO)!=IDYES)return;
     fs::path destination=gDataDir/"comlink";
+    if(gWorker.joinable())gWorker.join();
     gBusy=true;
     gWorker=std::thread([base,destination](){
         auto result=std::make_unique<ComlinkResult>();
@@ -723,7 +724,7 @@ void syncComlink() {
             if(!parsed2.isObj()||!parsed3.isObj())throw std::runtime_error("Comlink returned game data in an unexpected format.");
             std::string localizationVersion=metadata.str("latestLocalizationBundleVersion");
             if(localizationVersion.empty())throw std::runtime_error("Comlink metadata did not contain latestLocalizationBundleVersion.");
-            const std::string localizationRequest="{\"payload\":{\"id\":\""+escapeJson(localizationVersion)+"\",\"language\":\"ENG_US\"},\"unzip\":true}";
+            const std::string localizationRequest="{\"payload\":{\"id\":\""+escapeJson(localizationVersion+":ENG_US")+"\"},\"unzip\":true,\"enums\":false}";
             const std::string localization=httpRequest(base+L"/localization",L"POST",localizationRequest);
             json::parse(localization);
             fs::create_directories(destination);
@@ -834,6 +835,7 @@ LRESULT CALLBACK wndProc(HWND hwnd,UINT msg,WPARAM wp,LPARAM lp) {
         break;
     }
     case WM_APP+10:{
+        if(gWorker.joinable())gWorker.join();
         std::unique_ptr<ComlinkResult> result(reinterpret_cast<ComlinkResult*>(lp));gBusy=false;
         if(result)MessageBoxW(hwnd,fromUtf8(result->text).c_str(),result->ok?L"Comlink sync complete":L"Comlink sync failed",result->ok?MB_ICONINFORMATION:MB_ICONERROR);
         return 0;
