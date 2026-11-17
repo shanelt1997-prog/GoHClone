@@ -253,3 +253,41 @@ anything graphical.
 * Critical avoidance — https://forums.ea.com/discussions/swgoh-strategy-and-tips-en/what-exactly-does-critical-avoidance-do/3691888
 * Order of events in a turn — https://forums.ea.com/discussions/swgoh-technical-issues-en/the-big-problem-with-buffs--debuffs-in-the-game/10889886
 * Duration quirk report — https://forums.galaxy-of-heroes.starwars.ea.com/discussion/7403/bug-counter-applied-debuffs-lose-a-turn-of-duration
+
+---
+
+## Windows desktop interface (new)
+
+The solution now includes a separate **GoHCloneGUI** native Windows desktop project.
+Open `GoHClone.sln` in Visual Studio 2022, select **GoHCloneGUI** as the startup
+project, choose **x64 / Debug** or **x64 / Release**, then press **F5**.
+
+The GUI provides:
+* Overview of loaded units, teams and status counts.
+* A guided unit form for name, level, tags and stat-screen values.
+* A basic attack and one optional special ability, including an optional status effect
+  selected from the loaded status library and a bonus-turn checkbox.
+* A searchable status browser for every status currently loaded from
+  `data/library/statuses.json` and the other data files.
+* AI-vs-AI balance simulation with configurable teams, battle count and seed.
+* Data validation using the existing loader and its cross-reference checks.
+
+New units are saved as individual JSON files in `data/user/`. The GUI reloads the
+full content set after saving; invalid unit files are rejected and removed rather
+than left in the roster. The original console project and its command-line tools
+remain available in the same solution.
+
+### Current GUI scope and engine limitations
+
+The guided form is deliberately simple: it creates a basic and (optionally) one
+special ability. It does not yet provide a visual editor for arbitrary passive
+triggers, leader auras, nested effects or multi-ability kits. Those advanced
+mechanics remain available through the existing JSON data format documented in
+`docs/ADDING_UNITS.md` and `data/user/cookbook.json.txt`.
+
+The status browser shows the status definitions that are actually present in the
+project. The engine's library currently contains 123 generic entries (65 buffs
+and 58 debuffs), but this should not be described as every live effect in the
+commercial game: the limitations listed in `docs/STATUSES.md`,
+`docs/TURN_ACTIONS.md` and **Not implemented yet** still apply. Bonus turns are
+already represented by the `bonus_move` effect and are supported by the engine.
