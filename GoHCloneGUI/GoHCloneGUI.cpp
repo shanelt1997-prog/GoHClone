@@ -414,8 +414,19 @@ void updateStatusDetail() {
     const auto& s=gContent->status(gFilteredStatuses[static_cast<size_t>(n)]);
     std::ostringstream o;o<<s.name<<"\r\nID: "<<s.id<<"\r\nType: "<<(s.kind==StatusKind::Buff?"Buff":s.kind==StatusKind::Debuff?"Debuff":"Neutral")
       <<"\r\nDefault duration: "<<s.duration<<(s.duration==-1?" (permanent)":" turns")<<"\r\nMaximum stacks: "<<s.maxStacks
-      <<"\r\nDispellable: "<<(s.dispellable?"Yes":"No")<<"\r\nFlags bitmask: "<<static_cast<unsigned long>(s.flags)
-      <<"\r\nMode: "<<static_cast<int>(s.mode)<<"\r\n\r\nDescription: "<<s.description;
+      <<"\r\nDispellable: "<<(s.dispellable?"Yes":"No")<<"\r\nFlags:";
+    const std::pair<std::uint32_t,const char*> flagNames[]={{SF_Taunt,"Taunt"},{SF_Stealth,"Stealth"},{SF_Stun,"Stun"},{SF_AbilityBlock,"Ability Block"},
+      {SF_NoAssist,"No Assist"},{SF_NoCounter,"No Counter"},{SF_NoTMGain,"No Turn Meter Gain"},{SF_HealingImmunity,"Healing Immunity"},
+      {SF_DamageImmunity,"Damage Immunity"},{SF_CritImmunity,"Critical Immunity"},{SF_DebuffImmunity,"Debuff Immunity"},
+      {SF_BuffImmunity,"Buff Immunity"},{SF_IgnoreProtection,"Ignore Protection"},{SF_NoEvade,"Cannot Evade"},{SF_Foresight,"Foresight"},
+      {SF_Advantage,"Advantage"},{SF_Blind,"Blind"},{SF_Vulnerable,"Vulnerable"},{SF_SpeedZero,"Speed Zero"},{SF_NoRevive,"No Revive"},
+      {SF_InstantDefeatImmune,"Instant Defeat Immunity"},{SF_ProtectionDisabled,"Protection Disabled"},{SF_DamageToOne,"Damage To One"},
+      {SF_TMImmune,"Turn Meter Immunity"},{SF_NoBuffsOffTurn,"No Buffs Out Of Turn"},{SF_IgnoreTaunt,"Ignore Taunt"},
+      {SF_Uncounterable,"Uncounterable"},{SF_RiposteIgnoreProt,"Riposte Ignores Protection"},{SF_NoProtectionRecovery,"No Protection Recovery"}};
+    bool anyFlag=false;for(const auto& flag:flagNames)if((s.flags&flag.first)!=0){o<<" "<<flag.second;anyFlag=true;}if(!anyFlag)o<<" None";
+    const char* mode=s.mode==AmountMode::Dot?"Damage over time":s.mode==AmountMode::Hot?"Healing over time":
+      s.mode==AmountMode::ProtOverTime?"Protection over time":s.mode==AmountMode::BonusProtection?"Bonus protection":"None";
+    o<<"\r\nMode: "<<mode<<"\r\n\r\nDescription: "<<s.description;
     if(!s.mods.empty()){o<<"\r\n\r\nStat modifiers:";for(const auto& m:s.mods)o<<"\r\n - "<<statName(m.stat)<<" ("<<(m.op==ModOp::Add?"add":"% of base")<<"): "<<m.value;}
     if(!s.blocks.empty()){o<<"\r\n\r\nBlocks:";for(const auto& x:s.blocks)o<<"\r\n - "<<x;}
     if(!s.excludes.empty()){o<<"\r\n\r\nExcluded by:";for(const auto& x:s.excludes)o<<"\r\n - "<<x;}
