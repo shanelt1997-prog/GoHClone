@@ -470,7 +470,8 @@ void addEffect() {
     else if(type=="heal")j<<",\"multiplier\":"<<fmt(value)<<",\"protection_multiplier\":"<<fmt(aux);
     else if(type=="apply_status"||type=="remove_status"){
         if(status.empty()){MessageBoxW(gMain,L"Choose a status for this effect.",L"Status required",MB_ICONWARNING);return;}
-        j<<",\"status\":\""<<escapeJson(status)<<"\",\"duration\":"<<static_cast<int>(duration)<<",\"stacks\":"<<std::max(1,static_cast<int>(amount));
+        j<<",\"status\":\""<<escapeJson(status)<<"\",\"duration\":"<<duration<<",\"stacks\":"<<std::max(1,static_cast<int>(amount));
+        if(aux!=0)j<<",\"amount\":"<<fmt(aux);
     } else if(type=="modify_turn_meter"||type=="modify_ultimate")j<<",\"amount\":"<<fmt(value);
     else if(type=="modify_cooldown") j << ",\"amount\":" << fmt(value) << ",\"ability\":\"" << escapeJson(toUtf8(getText(gEffectAbility))) << "\"";
     else if(type=="dispel"){
@@ -481,7 +482,7 @@ void addEffect() {
     j<<"}";
     try{json::parse(j.str());}catch(const std::exception& e){MessageBoxW(gMain,fromUtf8(e.what()).c_str(),L"Effect JSON error",MB_ICONERROR);return;}
     gEffectJson.push_back(j.str());
-    std::string desc=type+" -> "+target+" ("+j.str()+")";
+    std::string desc=type+" -> "+target;
     if(!status.empty()&&(type=="apply_status"||type=="remove_status"))desc+=" ("+status+")";
     int n=static_cast<int>(SendMessageW(gEffectList,LB_ADDSTRING,0,reinterpret_cast<LPARAM>(fromUtf8(desc).c_str())));
     SendMessageW(gEffectList,LB_SETCURSEL,n,0);
@@ -542,8 +543,17 @@ void saveUnit() {
     int level=85;try{level=std::stoi(toUtf8(trimW(getText(gLevel))));}catch(...){level=0;}
     if(level<1||level>100){MessageBoxW(gMain,L"Level must be a whole number between 1 and 100.",L"Invalid level",MB_ICONWARNING);return;}
     std::vector<double> statValues(std::size(kStats),0);
-    for(auto p:gStatEdits){double v=0;if(!numberFrom(p.second,v)){MessageBoxW(gMain,fromUtf8(std::string("Invalid value for ")+kStats[static_cast<size_t>(p.first)].key).c_str(),L"Invalid stat",MB_ICONWARNING);return;}statValues[static_cast<size_t>(p.first)]=v;}
-    if(statValues[0]<=0||statValues[2]<=0){MessageBoxW(gMain,L"Health and Speed must be greater than zero.",L"Required stats",MB_ICONWARNING);return;}
+    std::vector<bool> statProvided(std::size(kStats),false);
+    for(auto p:gStatEdits){
+        const auto raw=trimW(getText(p.second));
+        if(raw.empty())continue; // leave omitted values at the engine's normal defaults
+        double v=0;
+        if(!numberFrom(p.second,v)){MessageBoxW(gMain,fromUtf8(std::string("Invalid value for ")+kStats[static_cast<size_t>(p.first)].key).c_str(),L"Invalid stat",MB_ICONWARNING);return;}
+        const std::string key=kStats[static_cast<size_t>(p.first)].key;
+        if((key=="armor_pct"||key=="resistance_pct")&&v>=100){MessageBoxW(gMain,L"Armor and Resistance percentages must be below 100.",L"Invalid percentage",MB_ICONWARNING);return;}
+        statValues[static_cast<size_t>(p.first)]=v;statProvided[static_cast<size_t>(p.first)]=true;
+    }
+    if(statValues[0]<=0||statValues[2]<=0){MessageBoxW(gMain,L"Health and Speed must be entered and must be greater than zero.",L"Required stats",MB_ICONWARNING);return;}
     int basics=0;for(const auto& a:gAbilityJson)if(a.find("\"kind\":\"basic\"")!=std::string::npos)++basics;
     if(basics!=1){MessageBoxW(gMain,L"Add exactly one ability with Type set to Basic before saving. You can add as many Special, Ultimate, Leader and Unique abilities as needed.",L"Basic ability required",MB_ICONWARNING);return;}
     std::error_code ec;fs::path folder=gDataDir/"user";fs::create_directories(folder,ec);
@@ -553,7 +563,11 @@ void saveUnit() {
     std::ostringstream j;j<<"{\n  \"units\": [{\n    \"id\": \""<<escapeJson(id)<<"\",\n    \"name\": \""<<escapeJson(name)<<"\",\n    \"level\": "<<level<<",\n    \"tags\": [";
     auto tags=split(toUtf8(getText(gTags)));for(size_t i=0;i<tags.size();++i)j<<(i?",":"")<<"\""<<escapeJson(tags[i])<<"\"";
     j<<"],\n    \"stats\": {\n";
-    for(size_t i=0;i<std::size(kStats);++i)j<<"      \""<<kStats[i].key<<"\": "<<fmt(statValues[i])<<(i+1==std::size(kStats)?"\n":",\n");
+    bool firstStat=true;
+    for(size_t i=0;i<std::size(kStats);++i)if(statProvided[i]){
+        j<<(firstStat?"":",\n")<<"      \""<<kStats[i].key<<"\": "<<fmt(statValues[i]);firstStat=false;
+    }
+    if(!firstStat)j<<"\n";
     j<<"    },\n    \"abilities\": [\n";
     for(size_t i=0;i<gAbilityJson.size();++i)j<<"      "<<gAbilityJson[i]<<(i+1==gAbilityJson.size()?"\n":",\n");
     j<<"    ]\n  }]\n}\n";
