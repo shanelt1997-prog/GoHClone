@@ -683,15 +683,16 @@ std::string httpRequest(const std::wstring& url,const wchar_t* method,const std:
     }
     DWORD status=0,statusSize=sizeof(status);
     WinHttpQueryHeaders(request,WINHTTP_QUERY_STATUS_CODE|WINHTTP_QUERY_FLAG_NUMBER,WINHTTP_HEADER_NAME_BY_INDEX,&status,&statusSize,WINHTTP_NO_HEADER_INDEX);
-    if(status<200||status>=300){
-        WinHttpCloseHandle(request);WinHttpCloseHandle(connection);WinHttpCloseHandle(session);
-        throw std::runtime_error("Comlink returned HTTP status "+std::to_string(status)+".");
-    }
     std::string response;
     for(;;){DWORD available=0;if(!WinHttpQueryDataAvailable(request,&available)||available==0)break;
         std::string chunk(available,'\0');DWORD read=0;
         if(!WinHttpReadData(request,chunk.data(),available,&read))break;
         chunk.resize(read);response+=chunk;
+    }
+    if(status<200||status>=300){
+        WinHttpCloseHandle(request);WinHttpCloseHandle(connection);WinHttpCloseHandle(session);
+        throw std::runtime_error("Comlink returned HTTP status "+std::to_string(status)+
+            (response.empty()?std::string("."):std::string(": ")+response));
     }
     WinHttpCloseHandle(request);WinHttpCloseHandle(connection);WinHttpCloseHandle(session);
     return response;
@@ -718,8 +719,11 @@ void syncComlink() {
             if(version.empty())throw std::runtime_error("Comlink metadata did not contain latestGamedataVersion.");
             const std::string request2="{\"payload\":{\"version\":\""+escapeJson(version)+"\",\"includePveUnits\":false,\"items\":\"Segment2\"},\"enums\":false}";
             const std::string request3="{\"payload\":{\"version\":\""+escapeJson(version)+"\",\"includePveUnits\":false,\"items\":\"Segment3\"},\"enums\":false}";
-            const std::string segment2=httpRequest(base+L"/data",L"POST",request2);
-            const std::string segment3=httpRequest(base+L"/data",L"POST",request3);
+            std::string segment2,segment3;
+            try{segment2=httpRequest(base+L"/data",L"POST",request2);}
+            catch(const std::exception& e){throw std::runtime_error("Requesting Segment2 with game-data version ["+version+"] failed: "+e.what());}
+            try{segment3=httpRequest(base+L"/data",L"POST",request3);}
+            catch(const std::exception& e){throw std::runtime_error("Requesting Segment3 with game-data version ["+version+"] failed: "+e.what());}
             json::Value parsed2=json::parse(segment2),parsed3=json::parse(segment3);
             if(!parsed2.isObj()||!parsed3.isObj())throw std::runtime_error("Comlink returned game data in an unexpected format.");
             std::string localizationVersion=metadata.str("latestLocalizationBundleVersion");
